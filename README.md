@@ -12,4 +12,4 @@ each connected to the next (a linear part, normally linked to a Story Node at it
 In future, will read in a .JSON file containing all story data, making defining a nonlinear story painless.</p>
 
 <p>Will be capable of injecting story text and option selections for connected pages into given HTML elements, 
-as <em>a robust back end for any nonlinear text-based game</em>.</p>
+as <strong>a robust back end for any nonlinear text-based game</strong>.</p>
