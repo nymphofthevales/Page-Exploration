@@ -9,7 +9,7 @@ class Graph {
     constructor () {
     }
     /**
-     * Returns the node at the specified index if it exists, undefined if it doesn't.
+     * Returns the node at the specified index, and throws an error if there is none.
     */
     get(index: NodeIndex): GraphNode {
         let node = this.nodes.get(index)
@@ -19,7 +19,7 @@ class Graph {
         return node
     }
     /**
-     * Returns the node at the specified index, or initializes and returns a new node with that index if it doesn't.
+     * Returns the node at the specified index, or if it doesn't, initializes and returns a new node with that index.
     */
     safeGet(index: NodeIndex): GraphNode {
         let node = this.nodes.get(index)
