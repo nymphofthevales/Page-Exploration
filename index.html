@@ -2,15 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Story Editor</title>
     <script src="./Graph.js"></script>
     <script src="./entrypoint.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="testing-frame">
-        <p id="text-frame"></p>
-        <div id="options-frame"></div>
+    <div id="application">
+        <div id="ancestors" class="node-viewer">
+            <button id="parent-eg" class="hidden story-node">
+                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
+            </button>
+        </div>
+
+        <div id="current">
+            <form action="javascript:void(0);" id="current-editor-form">
+                <label for="current-content"></label>
+                <fieldset id="current-title">
+                    <input type="text" id="current-title-editor">
+                </fieldset>
+                <fieldset id="current-content">
+                    <textarea id="current-content-editor"></textarea>
+                </fieldset>
+                <fieldset id="current-options">
+                    <div id="option-eg">
+                        <input type="text" id="option-eg-text-editor">
+                        <input type="text" id="option-eg-destination">
+                    </div>
+                </fieldset>
+                <button id="current-submit">Save Changes</button>
+                <button id="current-cancel">Undo Changes</button>
+            </form>
+        </div>
+
+        <div id="children" class="node-viewer">
+            <button id="child-eg" class="hidden story-node">
+                <h2 id="child-eg-title">node0</h2>
+                <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
+            </button>
+        </div>
     </div>
+    
     
 </body>
 </html>

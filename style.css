@@ -1,0 +1,32 @@
+
+
+
+#application {
+    height: 100vh;
+    width: 100vw;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-viewer, #current, fieldset {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.node-viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    width: 100%;
+    height: 20vh;
+}
+
+#current {
+    width: 40vw;
+    height: 30vh;
+}

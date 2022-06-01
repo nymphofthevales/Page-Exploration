@@ -1,187 +1,110 @@
 
-//import { DiGraph, GraphNode } from "./Graph"
+const fs = require("fs")
 
-/**
- * A collection of all the pages in a story.
-*/
-class StoryManager extends DiGraph {
-    nodes: Map<string, Sequence | StoryNode> = new Map()
-    currentPage: Leaf
-    constructor (rootNode: NodeTitle) {
-        super()
-        this.newSequence( {title: rootNode} )
-        this.currentPage = this.get(rootNode).page(0)
+class StoryNode {
+    content: string
+    constructor(content?: string) {
+        this.content = content? content : ''
     }
-    get(index: NodeTitle): Sequence | StoryNode {
-        let node = this.nodes.get(index)
-        if (!node || node.constructor != Sequence || node.constructor != StoryNode) {
-            throw new Error('No Sequence or StoryNode at index.')
+}
+
+class StoryOption {
+    disabled: boolean = false
+    text: string = ''
+    destination: StoryNode
+    constructor(text: string, destination: StoryNode) {
+        this.text = text
+        this.destination = destination
+    }
+}
+
+class Story {
+    nodes: Map<string, StoryNode>
+    adjacencyMap: Map<StoryNode, Set<StoryNode>>
+    edgeMap: Map<StoryNode, Set<StoryOption>>
+    currentNode: StoryNode
+    constructor () {
+        this.nodes = new Map()
+        this.adjacencyMap = new Map()
+        this.edgeMap = new Map()
+        this.addNode('root', new StoryNode())
+        this.currentNode = this.nodes.get('root') as StoryNode
+    }
+    getOptions(node: StoryNode): Set<StoryOption> {
+        return this.edgeMap.get(node) as Set<StoryOption>
+    }
+    node(nodeTitle: string): StoryNode | undefined {
+        return this.nodes.get(nodeTitle)
+    }
+    adjacencies(node: StoryNode): Set<StoryNode> | undefined {
+        return this.adjacencyMap.get(node) 
+    }
+    options(node: StoryNode): Set<StoryOption> | undefined {
+        return this.edgeMap.get(node) 
+    }
+    addNode(title: string, node: StoryNode, options?: Set<StoryOption>) {
+        this.nodes.set(title, node)
+        this.adjacencyMap.set(node, new Set())
+        if (options) {
+            this.edgeMap.set(node, options)
+            options.forEach((option)=>{ 
+                this.adjacencies(node)?.add(option.destination) 
+            })
+        } else {
+            this.edgeMap.set(node, new Set())
         }
-        return node
     }
-    newSequence(opts: SequenceOptions) {
-        this.add(new Sequence(opts, this))
+    link(origin: StoryNode, destination: StoryNode): void {
+        this.adjacencies(origin)?.add(destination)
+        this.options(origin)?.add(new StoryOption('',destination))
     }
-    newStoryNode(opts: StoryNodeOptions) {
-        this.add(new StoryNode(opts, this))
+    linkByOption(node: StoryNode, option: StoryOption) {
+        this.adjacencies(node)?.add(option.destination)
+        this.options(node)?.add(option)
     }
-    populateSequences(titles: Array<string>) {
-        for (let i=0; i< titles.length; i++) {
-            this.newSequence( {title: titles[i]} )
+    traverse(option: StoryOption): StoryNode {
+        if (!option.disabled) {
+            let optionMap = this.getOptions(this.currentNode)
+            if (optionMap.has(option)) {
+                this.currentNode = option.destination
+            }
         }
+        return this.currentNode
     }
-    populateStoryNodes(titles: Array<string>) {
-        for (let i=0; i< titles.length; i++) {
-            this.newStoryNode( {title: titles[i]} )
+    set current (node: StoryNode) {
+        if (this.adjacencyMap.has(node)) {
+            this.currentNode = node
         }
     }
 }
 
-/**
- * A single text-option set.
-*/
-class Leaf {
-    passage: string
-    choices: Array<string>
-    constructor(passage: string, choices: Array<string>) {
-        this.passage = passage
-        this.choices = choices
-    }
-}
 
-interface SequenceOptions {
-    title: string,
-    passages?: Array<string>,
-    defaultChoice?: string
-}
-/**
- * A series of ordered passages of text, each only being connected to the next without branching.
-*/
-class Sequence extends GraphNode {
-    leaves: Array<Leaf> = []
-    story: StoryManager
-    constructor (opts: SequenceOptions, story: StoryManager) {
-        super(opts.title)
-        let passages = opts.passages ? opts.passages : []
-        let defaultChoice = opts.defaultChoice ? opts.defaultChoice : ''
-        this.story = story
-        this.addBatchPage(passages, defaultChoice)
-    }
-    get length() {
-        return this.leaves.length
-    }
-    addPage(passage: string, choice: string) {
-        this.leaves.push(new Leaf(passage, [choice]))
-    }
-    addBatchPage(passages: Array<string>, defaultChoice: string) {
-        for (let i=0; i < passages.length; i++) {
-            this.leaves.push(new Leaf(passages[i], [defaultChoice]))
+function readStoryFromJSON(path: string): Story {
+    let story = new Story()
+    let data = JSON.parse(fs.readFileSync(path))
+    let nodes = Object.keys(data)
+    for (let i=0; i < nodes.length; i++) {
+        let title = nodes[i]
+        let currentNodeData = data[title]
+        let {content, options}  = currentNodeData
+        let currentNode = new StoryNode(content)
+        story.addNode(title, currentNode)
+        for (let j = 0; j < options.length; j++) {
+            let { text, destination } = options[j]
+            let destinationNode = story.node(destination)
+            if (destinationNode == undefined) {
+                destinationNode = new StoryNode()
+                story.addNode(destination, destinationNode)
+            }
+            let option = new StoryOption(text, destinationNode)
+            story.linkByOption(currentNode, option)
         }
     }
-    link(node: GraphNode) {
-        this.connections = {[node.index]: node}
-    }
-    page(number: number): Leaf {
-        return this.leaves[number]
-    }
+    return story
 }
 
-type NodeTitle = string
+let labyrinth = readStoryFromJSON("./keeper-of-the-labyrinth.json")
+labyrinth.current = labyrinth.node("intro0") as StoryNode
 
-interface StoryNodeOptions {
-    title: NodeTitle,
-    passage?: string,
-    choices?: Array<[string, NodeTitle]>
-}
 
-/**
- * A single page with multiple options; which connects to multiple branches.
-*/
-class StoryNode extends GraphNode {
-    leaf: Leaf
-    story: StoryManager
-    constructor (opts: StoryNodeOptions, story: StoryManager) {
-        super(opts.title)
-        let passage = opts.passage ? opts.passage : ''
-        let choices= opts.choices ? opts.choices : []
-        this.story = story
-        this.leaf = new Leaf(passage,[])
-        for (let i=0; i < choices.length; i++) {
-            let [choice, destination] = choices[i]
-            this.addOption(choice, destination)
-        }
-        
-    }
-    addOption(choice: string, destination: string) {
-        let dest = this.story.get(destination)
-        this.leaf.choices.push(choice)
-        this.link(dest)
-    }
-    set text(passage: string) {
-        this.leaf.passage = passage
-    }
-    get options() {
-        let opts: Array<[string, GraphNode]> = []
-        for (let i=0; i < this.leaf.choices.length; i++) {
-            let optionText = this.leaf.choices[i]
-            let optionDestination = this.connections[i]
-            opts.push( [optionText, optionDestination] )
-        }
-        return opts
-    }
-    page(number: number): Leaf {
-        return this.leaf
-    }
-}
-
-let labyrinth = new StoryManager('intro')
-labyrinth.populateSequences( ['intro','REntry','LEntry','candleAnte','castRunes','LeaveAnte','moveOnAnte','enterProper','checkFleeing','investigateFleeing','carryOnFleeing','LProper','BridgeWall','MossyCorner','Watching','WatchingBlink','WatchingReturn','ApproachWall','Lines','LinesTakeCandle','LinesLeaveCandle','LeaveLines','LeaveWall','CarryOnWall','Pressing'] )
-labyrinth.populateStoryNodes( ['enter','ante','finishCandleAnte','readRunes','inventory','obelisk','LabyrinthProper','Fleeing','turnFleeing','runFleeing','chamberFleeing','NobodyWall','WatchingNode','Wall','SqueezeWall','LinesCandleNode'] )
-labyrinth.loadConnections( {
-    'intro': ['enter'],
-    'enter': ['LEntry','REntry'],
-    'REntry': ['ante'],
-    'LEntry': ['ante'],
-    'ante': ['obelisk','inventory','moveOnAnte'],
-    'obelisk': ['inventory','moveOnAnte'],
-    'inventory': ['castRunes','candleAnte','obelisk','moveOnAnte'],
-    'candleAnte': ['finishCandleAnte'],
-    'finishCandleAnte': ['moveOnAnte'],
-} )
-/*
-labyrinth.loadText( {
-    'intro': ['The ice',
-        'rises above',
-        'stone',
-        'boundaries',
-        'wait at the gate']
-    'enter': ['']
-} )
-
-helpers.generateOptionList( {'1-4': 'next', '5': 'enter'} )
-    => returns ['next','next','next','next','enter']
-helpers.capitalize( ['next','next','next','next','enter'] )
-
-labyrinth.loadOptionText( {
-    'intro': ['Next','Next','Next','Next','Enter'],
-    'enter': ['Left','Right']
-} )
-Same input, different response: for sequence, 
-list of options becomes one per page, 
-for storynode,
-list of options becomes linked to each connection.
-In general, loading in option text overwrites previous entry,
-doesn't add onto it.
-
-at runtime:
-initialize
-describe connections
-set text
-set options
-
-in game loop:
-modify connections
-modify options
-
-request next page
-*/
+//document to make it clearer on what happens when a node doesn't exist in the story, but is referenced anyway. desired behaviour is that that node should be created empty with the given title under the assumption that is should exist if it's being called, and since it's at that title, it will be given content later. since Maps and Sets can only store unique entries, adding a node with the same name later will overwrite the empty one.
