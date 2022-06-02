@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Story Editor</title>
-    <script src="./Graph.js"></script>
-    <script src="./entrypoint.js"></script>
+    <script src="./application.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,6 +16,12 @@
             <div id="current-label">
                 <h2>Current Story Node</h2>
                 <p>Edit the text content and options available to the player at the current story node.</p>
+                <form action="javascript:void(0);" id="current-select-form">
+                    <label for="current-node-select">Change current node:</label>
+                    <select name="current-node-select" id="current-node-select" class="story-node-selector">
+                        <option value="default">title: some preview of content like...</option>
+                    </select>
+                </form>
             </div>
             <div id="child-label">
                 <h2>Child Nodes</h2>
@@ -73,36 +78,27 @@
                         <input type="text" id="child-eg-option-text" value="Raise your wand.">
                     </form>
                     <button id="child-eg" class="hidden story-node child-node">
-                        <h2 id="child-eg-title">node0</h2>
+                        <h2 id="child-eg-title">node2</h2>
                         <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
                     </button>
                     <button id="remove-child">—</button>
                 </div>
 
-                <div id="child-eg-bundle" class="child-bundle">
-                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
-                        <label for="child-eg-option-text">Story option:</label>
-                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                <div id="add-child-menu" class="child-bundle">
+                    <form action="javascript:void(0);" id="add-child-form">
+                        <h3>Link new child</h3>
+                        <fieldset>
+                            <label for="child-eg-option-text">Story option:</label>
+                            <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                        </fieldset>
+                        <fieldset>
+                            <label for="child-node-select">Destination node:</label>
+                            <select name="child-node-select" id="child-node-select" class="story-node-selector">
+                                <option value="title">title: content preview like...</option>
+                            </select>
+                        </fieldset>
                     </form>
-                    <button id="child-eg" class="hidden story-node child-node">
-                        <h2 id="child-eg-title">node0</h2>
-                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-                    </button>
-                    <button id="remove-child">—</button>
                 </div>
-
-                <div id="child-eg-bundle" class="child-bundle">
-                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
-                        <label for="child-eg-option-text">Story option:</label>
-                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
-                    </form>
-                    <button id="child-eg" class="hidden story-node child-node">
-                        <h2 id="child-eg-title">node0</h2>
-                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-                    </button>
-                    <button id="remove-child">—</button>
-                </div>
-
                 <button id="add-child">+</button>
             </div>
         </div>

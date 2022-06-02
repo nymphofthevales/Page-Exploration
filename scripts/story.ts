@@ -58,16 +58,18 @@ class Story {
         this.adjacencies(origin)?.add(destination)
         this.options(origin)?.add(new StoryOption('',destination))
     }
-    linkByOption(node: StoryNode, option: StoryOption) {
+    addOption(node: StoryNode, option: StoryOption) {
         this.adjacencies(node)?.add(option.destination)
         this.options(node)?.add(option)
     }
+    removeOption(node: StoryNode, option: StoryOption) {
+        this.adjacencies(node)?.delete(option.destination)
+        this.options(node)?.delete(option)
+    }
     traverse(option: StoryOption): StoryNode {
-        if (!option.disabled) {
-            let optionMap = this.getOptions(this.currentNode)
-            if (optionMap.has(option)) {
-                this.currentNode = option.destination
-            }
+        let optionMap = this.getOptions(this.currentNode)
+        if (optionMap.has(option)) {
+            this.currentNode = option.destination
         }
         return this.currentNode
     }
@@ -97,7 +99,7 @@ function readStoryFromJSON(path: string): Story {
                 story.addNode(destination, destinationNode)
             }
             let option = new StoryOption(text, destinationNode)
-            story.linkByOption(currentNode, option)
+            story.addOption(currentNode, option)
         }
     }
     return story

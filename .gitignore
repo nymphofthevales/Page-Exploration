@@ -1,5 +1,6 @@
 node_modules/
 .DS_Store
 
-.js
-*.js
+/scripts/*.js
+!storyDataParser.js
+application.js
