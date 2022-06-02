@@ -9,67 +9,102 @@
 </head>
 <body>
     <div id="application">
-        <div id="ancestors" class="node-viewer">
-            <button id="parent-eg" class="hidden story-node">
-                <h2 id="parent-eg-title">intro</h2>
-                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="parent-eg" class="hidden story-node">
-                <h2 id="parent-eg-title">intro</h2>
-                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="parent-eg" class="hidden story-node">
-                <h2 id="parent-eg-title">intro</h2>
-                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="parent-eg" class="hidden story-node">
-                <h2 id="parent-eg-title">intro</h2>
-                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="parent-eg" class="hidden story-node">
-                <h2 id="parent-eg-title">intro</h2>
-                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="parent-eg" class="hidden story-node">
-                <h2 id="parent-eg-title">intro</h2>
-                <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
+        <div id="labels">
+            <div id="ancestors-label">
+                <h2>Ancestor Nodes</h2>
+                <p>All nodes which have options leading to the currently selected story node.</p>
+            </div>
+            <div id="current-label">
+                <h2>Current Story Node</h2>
+                <p>Edit the text content and options available to the player at the current story node.</p>
+            </div>
+            <div id="child-label">
+                <h2>Child Nodes</h2>
+                <p>Nodes which are connected to the current story node by options.</p>
+            </div>
         </div>
+        <div id="actionable-content">
+            <div id="ancestors" class="node-viewer">
+                <button id="parent-eg" class="hidden story-node ancestor-node">
+                    <h2 id="parent-eg-title">intro</h2>
+                    <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
+                </button>
+            </div>
+    
+            <div id="current" class="node-viewer">
+                <form action="javascript:void(0);" id="current-editor-form">
+                    <h2>Node Data</h2>
+                    <label for="current-title">
+                        <h4>Title</h4>
+                    </label>
+                    <fieldset id="current-title">
+                        <input type="text" id="current-title-editor">
+                    </fieldset>
+                    <label for="current-content">
+                        <h4>Content:</h4>
+                        <p>Enter plaintext or valid HTML.</p>
+                    </label>
+                    <fieldset id="current-content">
+                        <textarea id="current-content-editor"></textarea>
+                    </fieldset>
+                </form>
+                <form action="javascript:void(0);" id="">
+                    <h2>Node Events</h2>
+                </form>
+            </div>
+    
+            <div id="children" class="node-viewer">
 
-        <div id="current">
-            <form action="javascript:void(0);" id="current-editor-form">
-                
-                <fieldset id="current-title">
-                    <input type="text" id="current-title-editor">
-                </fieldset>
-                <label for="current-content"></label>
-                <fieldset id="current-content">
-                    <textarea id="current-content-editor"></textarea>
-                </fieldset>
-                <fieldset id="current-options">
-                    <div id="option-eg">
-                        <input type="text" id="option-eg-text-editor">
-                        <input type="text" id="option-eg-destination">
-                    </div>
-                </fieldset>
-                <button id="current-submit">Save Changes</button>
-                <button id="current-cancel">Undo Changes</button>
-            </form>
-        </div>
+                <div id="child-eg-bundle" class="child-bundle">
+                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
+                        <label for="child-eg-option-text">Story option:</label>
+                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                    </form>
+                    <button id="child-eg" class="hidden story-node child-node">
+                        <h2 id="child-eg-title">node0</h2>
+                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
+                    </button>
+                    <button id="remove-child">—</button>
+                </div>
 
-        <div id="children" class="node-viewer">
-            <button id="child-eg" class="hidden story-node">
-                <h2 id="child-eg-title">node0</h2>
-                <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="child-eg" class="hidden story-node">
-                <h2 id="child-eg-title">node0</h2>
-                <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
-            <button id="child-eg" class="hidden story-node">
-                <h2 id="child-eg-title">node0</h2>
-                <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-            </button>
+                <div id="child-eg-bundle" class="child-bundle">
+                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
+                        <label for="child-eg-option-text">Story option:</label>
+                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                    </form>
+                    <button id="child-eg" class="hidden story-node child-node">
+                        <h2 id="child-eg-title">node0</h2>
+                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
+                    </button>
+                    <button id="remove-child">—</button>
+                </div>
+
+                <div id="child-eg-bundle" class="child-bundle">
+                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
+                        <label for="child-eg-option-text">Story option:</label>
+                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                    </form>
+                    <button id="child-eg" class="hidden story-node child-node">
+                        <h2 id="child-eg-title">node0</h2>
+                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
+                    </button>
+                    <button id="remove-child">—</button>
+                </div>
+
+                <div id="child-eg-bundle" class="child-bundle">
+                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
+                        <label for="child-eg-option-text">Story option:</label>
+                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                    </form>
+                    <button id="child-eg" class="hidden story-node child-node">
+                        <h2 id="child-eg-title">node0</h2>
+                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
+                    </button>
+                    <button id="remove-child">—</button>
+                </div>
+
+                <button id="add-child">+</button>
+            </div>
         </div>
     </div>
     

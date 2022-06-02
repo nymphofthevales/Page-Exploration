@@ -3,6 +3,7 @@
     box-sizing: border-box;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
+    outline: none !important;
 }
 
 #application {
@@ -10,12 +11,36 @@
     width: 100vw;
     padding: 50px;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+#labels {
+    width: 20%;
+}
+#actionable-content {
+    width: 80%;
+    
+}
+#actionable-content, #labels {
+    height: 100vh;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
 }
+#ancestors-label, #child-label {
+    height: 15vh;
+}
+#current-label {
+    height: 40vh;
+}
 
-#current, fieldset {
+form {
+    border: 1px solid black;
+    padding: 10px;
+}
+fieldset {
     padding: 10px;
     border: 1px solid black;
 }
@@ -24,20 +49,85 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     overflow-x: scroll;
     width: 100%;
+    height: 15vh;
+}
+
+.node-viewer > * {
+    height: 100%;
+    margin-left: 50px;
+}
+#current {
+    height: 40vh;
+}
+#current > form {
+    width: 40%;
+}
+#current-title-editor {
+    width: 100%;
+}
+#current-content-editor {
+    width: 100%;
     height: 20vh;
+    resize: none;
 }
 
 .story-node {
     width: 300px;
-    height: 100%;
-    margin: 10px;
+    padding: 15px;
     flex-grow: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.story-node > * {
+    text-align: left;
+}
+.story-node:hover, #add-child:hover, #remove-child:hover {
+    background-color: #ff8899;
+}
+.story-node:active, #add-child:active, #remove-child:active {
+    background-color: #770033;
+    color: white;
+}
+.child-node {
+    border: none;
+    height: 70%;
+}
+.child-bundle, .ancestor-node {
+    height: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.child-bundle {
+    position: relative;
+}
+.option-form {
+    border: none;
+    height: 30%;
 }
 
-#current {
-    width: 40vw;
-    height: 30vh;
+#add-child {
+    height: 70px;
+    width: 70px;
+    border-radius: 35px;
+    font-size: 35px;
+    font-weight: lighter;
+}
+
+#remove-child {
+    height: 20px;
+    width: 30px;
+    border-radius: 10px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#add-child, #remove-child {
+    border: none;
+    background-color: transparent;
 }
