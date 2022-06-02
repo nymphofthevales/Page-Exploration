@@ -5,7 +5,7 @@ type NeighbourList = Set<any>
 /**
  * A data structure for representing any set of interconnected nodes.
 */
-export class Graph {
+class Graph {
     adjacencyMap: Map<GraphNode, NeighbourList>
     constructor() {
         this.adjacencyMap = new Map()
@@ -28,7 +28,7 @@ export class Graph {
 /**
  * A 'directed' graph, with one-way connections by default.
  */
-export class DiGraph extends Graph {
+class DiGraph extends Graph {
     constructor () {
         super()
     }
