@@ -10,7 +10,7 @@ interface InputMap {
 export class Form extends DynamicElement {
     _housing: HTMLElement
     inputs: InputMap = {}
-    values = {}
+    values: FormReadout = {}
     _submit: HTMLElement
     _close: HTMLElement
     constructor(id: string) {
@@ -32,6 +32,8 @@ export class Form extends DynamicElement {
             let element = <HTMLInputElement>this.inputs[key]
             if (element.type == "checkbox") {
                 this.values[key] = element.checked
+            } else if (element.tagName == "TEXTAREA") {
+                this.values[key] = element.innerText
             } else {
                 this.values[key] = element.value
             }
@@ -43,14 +45,23 @@ export class Form extends DynamicElement {
             this.inputs[element].value = ""
         }
     }
-    set submitInput(id) {
+    set submitInput(id: string) {
         this._submit = document.getElementById(id)
     }
     set onSubmit(callback: EventListenerOrEventListenerObject) {
-        this._submit.addEventListener("mouseup", callback)
+        switch (this._submit.tagName) {
+            case "BUTTON":
+                this._submit.addEventListener("mouseup", callback)
+                break;
+            case "INPUT":
+            case "TEXTAREA":
+            case "SELECT":
+                this._submit.addEventListener("change", callback)
+                break;
+        }
     }
-    set closeInput(id) {
-        this._close = document.getElementById(id)
+    set closeInput(id: string) {
+        this._close = document.getElementById(id)!
     }
     set onClose(callback: EventListenerOrEventListenerObject) {
         this._close.addEventListener("mouseup", callback) 

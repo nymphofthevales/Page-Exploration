@@ -23,8 +23,8 @@ function createWindow() {
     })    
     app_window.loadFile('index.html')
     app_window.once('ready-to-show', () => {
-      app_window.show()
-      })
+        app_window.show()
+    })
 }
 
 app.whenReady().then(() => {

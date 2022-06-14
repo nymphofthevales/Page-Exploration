@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Story Editor</title>
-    <script src="./application.js" defer></script>
+    <script src="./application.js" type="module" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,13 +38,7 @@
     
             <div id="current" class="node-viewer">
                 <form action="javascript:void(0);" id="current-editor-form">
-                    <h2>Node Data</h2>
-                    <label for="current-title">
-                        <h4>Title</h4>
-                    </label>
-                    <fieldset id="current-title">
-                        <input type="text" id="current-title-editor">
-                    </fieldset>
+                    <h2 id="current-title">Title</h2>
                     <label for="current-content">
                         <h4>Content:</h4>
                         <p>Enter plaintext or valid HTML.</p>
@@ -59,47 +53,24 @@
             </div>
     
             <div id="children" class="node-viewer">
-
-                <div id="child-eg-bundle" class="child-bundle">
-                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
-                        <label for="child-eg-option-text">Story option:</label>
-                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
-                    </form>
-                    <button id="child-eg" class="hidden story-node child-node">
-                        <h2 id="child-eg-title">node0</h2>
-                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-                    </button>
-                    <button id="remove-child">—</button>
-                </div>
-
-                <div id="child-eg-bundle" class="child-bundle">
-                    <form action="javascript:void(0);" id="child-eg-option-form" class="option-form">
-                        <label for="child-eg-option-text">Story option:</label>
-                        <input type="text" id="child-eg-option-text" value="Raise your wand.">
-                    </form>
-                    <button id="child-eg" class="hidden story-node child-node">
-                        <h2 id="child-eg-title">node2</h2>
-                        <p id="child-eg-content-preview">This should show the first hundred characters or so of...</p>
-                    </button>
-                    <button id="remove-child">—</button>
-                </div>
-
-                <div id="add-child-menu" class="child-bundle">
+                <button id="add-child">+</button>
+                <div id="add-child-menu" class="hidden">
                     <form action="javascript:void(0);" id="add-child-form">
                         <h3>Link new child</h3>
                         <fieldset>
-                            <label for="child-eg-option-text">Story option:</label>
-                            <input type="text" id="child-eg-option-text" value="Raise your wand.">
+                            <label for="add-child-option-text">Story option:</label>
+                            <input type="text" id="add-child-option-text" value="">
                         </fieldset>
                         <fieldset>
-                            <label for="child-node-select">Destination node:</label>
-                            <select name="child-node-select" id="child-node-select" class="story-node-selector">
-                                <option value="title">title: content preview like...</option>
+                            <label for="add-child-node-select">Destination node:</label>
+                            <input name="add-child-node-select" id="add-child-node-select" class="story-node-selector" list="add-child-node-datalist">
+                                <datalist id="add-child-node-datalist">
+                                    <option value="title">title: content preview like...</option>
+                                </datalist>
                             </select>
                         </fieldset>
                     </form>
                 </div>
-                <button id="add-child">+</button>
             </div>
         </div>
     </div>
