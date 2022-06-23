@@ -106,6 +106,29 @@ export class Story {
             this.currentNode = node
         }
     }
+    forEachNode(callback, returnVariable?): any {
+        return this.nodes.forEach(callback, returnVariable)
+    }
+    get emptyNodes() {
+        let emptyNodes = []
+        this.forEachNode((node: StoryNode)=>{
+            if (node.content == '') {
+                emptyNodes.push(this.title(node))
+            }
+        }, emptyNodes)
+        return emptyNodes 
+    }
+    get disconnectedNodes() {
+        let disconnectedNodes = []
+        this.forEachNode((node: StoryNode)=>{
+            if (this.adjacencies(node).size == 0) {
+                if (this.ancestralAdjacencies(node).size == 0) {
+                    disconnectedNodes.push(this.title(node))
+                }
+            }
+        }, disconnectedNodes)
+        return disconnectedNodes
+    }
 }
 
 interface NodeData {
@@ -121,11 +144,10 @@ export function readStoryData(filename: string): Story {
     let story = new Story()
     let data = JSON.parse(fs.readFileSync("./data/" + filename + ".json"))
     let nodes = Object.keys(data)
-    console.log(nodes.length)
     for (let i=0; i < nodes.length; i++) {
         let title = nodes[i]
         let currentNodeData = data[title]
-        let {content, options}  = <NodeData>currentNodeData
+        let { content, options }  = <NodeData>currentNodeData
         let currentNode = new StoryNode(content)
         currentNode = story.addNode(title, currentNode)
         for (let j = 0; j < options.length; j++) {
