@@ -75,6 +75,20 @@ export class Story {
         }
         return this.node(title)
     }
+    removeNode(node: StoryNode) {
+        if (this.has(node)) {
+            let title = this.title(node)
+            this.adjacencies(node).forEach((childNode)=>{this.ancestralAdjacencies(childNode).delete(node)})
+            this.ancestralAdjacencies(node).forEach((parentNode)=>{
+                this.adjacencies(parentNode).delete(node)
+                this.options(parentNode).forEach((option: StoryOption, same, set)=>{
+                    if (option.destination == node) {
+                        set.delete(option)
+                    }
+                })
+            })
+        }
+    }
     setupOptions(node: StoryNode, options: Set<StoryOption>) {
         this.edgeMap.set(node, options)
         options.forEach((option)=>{ 
@@ -88,10 +102,12 @@ export class Story {
     }
     addOption(node: StoryNode, option: StoryOption) {
         this.adjacencies(node).add(option.destination)
+        this.ancestralAdjacencies(option.destination).add(node)
         this.options(node).add(option)
     }
     removeOption(node: StoryNode, option: StoryOption) {
         this.adjacencies(node).delete(option.destination)
+        this.ancestralAdjacencies(option.destination).delete(node)
         this.options(node).delete(option)
     }
     traverse(option: StoryOption): StoryNode {
@@ -102,10 +118,13 @@ export class Story {
         return this.currentNode
     }
     set current (node: StoryNode) {
-        if (this.adjacencyMap.has(node)) {
+        if (this.has(node)) {
             this.currentNode = node
         }
     }
+    /**
+     * Callback recieves (node, title, nodeMap)
+    */
     forEachNode(callback, returnVariable?): any {
         return this.nodes.forEach(callback, returnVariable)
     }
@@ -153,6 +172,9 @@ export function readStoryData(filename: string): Story {
         for (let j = 0; j < options.length; j++) {
             let { text, destination } = options[j]
             let destinationNode = story.node(destination)
+            if (destination == undefined) {
+                console.log(text)
+            }
             if (destinationNode == undefined) {
                 destinationNode = new StoryNode()
                 story.addNode(destination, destinationNode)
@@ -162,6 +184,12 @@ export function readStoryData(filename: string): Story {
         }
     }
     return story
+}
+
+export function writeStoryData(story: Story) {
+    story.forEachNode(()=>{
+        
+    })
 }
 
 //document to make it clearer on what happens when a node doesn't exist in the story, but is referenced anyway. desired behaviour is that that node should be created empty with the given title under the assumption that is should exist if it's being called, and since it's at that title, it will be given content later. since Maps and Sets can only store unique entries, adding a node with the same name later will overwrite the empty one.

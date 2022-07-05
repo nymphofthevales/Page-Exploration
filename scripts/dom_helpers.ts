@@ -1,9 +1,14 @@
 
 
+/**
+ * Runs callback on each member of given class. 
+ * Callback recieves (element, index, targetClass)
+*/
 export function forEachInClass(targetClass: string, callback: Function): void {
-    let elements = document.getElementsByClassName(targetClass)
+    let elementCollection = document.getElementsByClassName(targetClass)
+    let elements = Array.from(elementCollection)
     for (let i=0; i < elements.length; i++) {
-        callback(elements[i])
+        callback(elements[i], i, targetClass)
     }
 }
 

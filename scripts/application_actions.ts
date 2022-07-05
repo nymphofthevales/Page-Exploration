@@ -1,5 +1,6 @@
 
 import { Story } from "./story.js"
+import { StoryRenderer } from "./StoryRenderer.js"
 
 /**
  * Makes the enter key blur the focused element. 
@@ -24,17 +25,25 @@ export function addChild(renderer, newChildForm) {
     newChildForm.clearInputs();
 }
 
-export function checkDuplicateNodes(story: Story) {
-    story.forEachNode((node)=>{
-        let title = story.title(node)
-        console.log(title)
-        if (story.nodes.has(title + "0")) {
-                    //for numerical indexed titles generated from Sequences
-            if (!lastCharIsNum(title)) {
-                throw new Error(`Check duplicate title ${title}, ${title}0`)
-            }
-        }
-    })
+export function shiftCurrent(renderer: StoryRenderer, currentSelectForm) {
+    let { selection } = currentSelectForm.read()
+    if (renderer.story.nodes.has(selection)) {
+        renderer.traverseTo(renderer.story.node(selection))
+    }
+    document.getElementById("current-node-select").blur()
+    currentSelectForm.clearInputs();
+    
+}
+
+export function removeCurrent(renderer: StoryRenderer, removeCurrentForm) {
+    if (renderer.story.title(renderer.story.currentNode) != "root") {
+        renderer.story.removeNode(renderer.story.currentNode)
+        renderer.traverseTo(renderer.story.node('root'))
+        renderer.render()
+    } else {
+        throw new Error("Root node cannot be removed.")
+    }
+    removeCurrentForm.hide()
 }
 
 function lastCharIsNum(string): boolean {

@@ -18,9 +18,19 @@
                 <p>Edit the text content and options available to the player at the current story node.</p>
                 <form action="javascript:void(0);" id="current-select-form">
                     <label for="current-node-select">Change current node:</label>
-                    <select name="current-node-select" id="current-node-select" class="story-node-selector">
-                        <option value="default">title: some preview of content like...</option>
-                    </select>
+                    <input name="current-node-select" id="current-node-select" list="current-node-datalist">
+                        <datalist id="current-node-datalist" class="story-node-selector">
+                            <option value="title">title: content preview like...</option>
+                        </datalist>
+                    </input>
+                </form>
+                <button id="remove-current">Remove Current Node</button>
+                <form action="javascript:void(0);" id="remove-current-form" class="hidden">
+                    <h2>Remove Current Node</h2>
+                    <p>Note: Removing the current note will remove all options leading to and from it.</p>
+                    <p>This action cannot be undone.</p>
+                    <button id="remove-current-confirm">Remove</button>
+                    <button id="remove-current-cancel">Cancel</button>
                 </form>
             </div>
             <div id="child-label">
@@ -30,10 +40,6 @@
         </div>
         <div id="actionable-content">
             <div id="ancestors" class="node-viewer">
-                <button id="parent-eg" class="hidden story-node ancestor-node">
-                    <h2 id="parent-eg-title">intro</h2>
-                    <p id="parent-eg-content-preview">This should show the first hundred characters or so of...</p>
-                </button>
             </div>
     
             <div id="current" class="node-viewer">
@@ -63,11 +69,11 @@
                         </fieldset>
                         <fieldset>
                             <label for="add-child-node-select">Destination node:</label>
-                            <input name="add-child-node-select" id="add-child-node-select" class="story-node-selector" list="add-child-node-datalist">
-                                <datalist id="add-child-node-datalist">
+                            <input name="add-child-node-select" id="add-child-node-select" list="add-child-node-datalist">
+                                <datalist id="add-child-node-datalist" class="story-node-selector">
                                     <option value="title">title: content preview like...</option>
                                 </datalist>
-                            </select>
+                            </input>
                         </fieldset>
                     </form>
                 </div>

@@ -6,12 +6,15 @@
     outline: none !important;
     flex-grow: 0;
     flex-shrink: 0;
+    color: white;
 }
 
 body {
-    background-color: white;
+    background-color: black;
 }
-
+button, input, textarea, datalist, select {
+    background-color: black;
+}
 #application {
     height: 100vh;
     width: 100vw;
@@ -43,12 +46,22 @@ body {
 }
 
 form {
-    border: 1px solid black;
+    border: 1px solid white;
     padding: 10px;
 }
 fieldset {
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid white;
+}
+select {
+    max-width: 200px;
+}
+option {
+    font-family: monospace !important;
+}
+datalist {
+    overflow-y: scroll;
+    max-height: 20vh;
 }
 
 .node-viewer {
@@ -90,11 +103,11 @@ fieldset {
     text-align: left;
 }
 .story-node:hover, #add-child:hover, .remove-child:hover {
-    background-color: #ff8899;
+    background-color: #770033;
 }
 .story-node:active, #add-child:active, .remove-child:active {
-    background-color: #770033;
-    color: white;
+    background-color: #ff8899;
+    color: black
 }
 
 .child-node {
@@ -103,7 +116,7 @@ fieldset {
 }
 .child-bundle, #add-child-menu, .ancestor-node {
     height: 100%;
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 5px;
 }
 .child-bundle, #add-child-menu {

@@ -15,9 +15,7 @@
 	},
 	"credits2": {
 		"content": "Thank you for seeing this journey through to the end.<br><br>In all you do, may your light shine brightly.",
-		"options": [{
-			"text": "End."
-		}]
+		"options": []
 	},
 	"egress": {
 		"content": "The stone of the steps leading up from the altar are bowed out in the middle, carved by time and the weight of a thousand footsteps. How many times has a Keeper passed here? How many bright souls have called this journey their own? How many have struggled, and hurt, and fallen along the way?",
