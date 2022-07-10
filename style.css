@@ -8,12 +8,28 @@
     flex-shrink: 0;
     color: white;
 }
+*::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background-color: transparent;
+}
+*::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    pointer-events: none;
+}
+*::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background-color: white;
+}
 
 body {
     background-color: black;
 }
 button, input, textarea, datalist, select {
     background-color: black;
+}
+textarea {
+    padding: 10px;
 }
 .uibutton {
     padding: 4px;
@@ -111,14 +127,15 @@ datalist {
     justify-content: flex-start;
     overflow-x: scroll;
     width: 100%;
-    height: 15vh;
+    height: 18vh;
+    padding: 10px;
 }
 .node-viewer > * {
     height: 100%;
     margin-left: 50px;
 }
 #current {
-    height: 40vh;
+    height: 45vh;
 }
 #current-editor-form {
     width: 25vw;

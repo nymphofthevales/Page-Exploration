@@ -78,7 +78,9 @@ export class Story {
     removeNode(node: StoryNode) {
         if (this.has(node)) {
             let title = this.title(node)
-            this.adjacencies(node).forEach((childNode)=>{this.ancestralAdjacencies(childNode).delete(node)})
+            this.adjacencies(node).forEach((childNode)=>{
+                this.ancestralAdjacencies(childNode).delete(node)
+            })
             this.ancestralAdjacencies(node).forEach((parentNode)=>{
                 this.adjacencies(parentNode).delete(node)
                 this.options(parentNode).forEach((option: StoryOption, same, set)=>{
@@ -106,6 +108,7 @@ export class Story {
         this.options(node).add(option)
     }
     removeOption(node: StoryNode, option: StoryOption) {
+        console.log(`removed ${this.title(option.destination)} from ${this.title(node)}`)
         this.adjacencies(node).delete(option.destination)
         this.ancestralAdjacencies(option.destination).delete(node)
         this.options(node).delete(option)

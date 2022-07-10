@@ -101,8 +101,7 @@ export class StoryRenderer {
         </div>`
     }
     removeChild(title, option) {
-        let node = this.story.node(title)
-        this.story.removeOption(node, option)
+        this.story.removeOption(this.story.currentNode, option)
         document.getElementById(`child-${title}-bundle`).remove();
         this.updateStoryNodeLists()
     }
