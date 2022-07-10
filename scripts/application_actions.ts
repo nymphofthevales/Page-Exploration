@@ -1,6 +1,8 @@
 
-import { Story } from "./story.js"
+import { DynamicElement } from "./dynamicElement.js"
+import { Story, writeStoryData } from "./story.js"
 import { StoryRenderer } from "./StoryRenderer.js"
+let fs = require("fs")
 
 /**
  * Makes the enter key blur the focused element. 
@@ -30,9 +32,8 @@ export function shiftCurrent(renderer: StoryRenderer, currentSelectForm) {
     if (renderer.story.nodes.has(selection)) {
         renderer.traverseTo(renderer.story.node(selection))
     }
-    document.getElementById("current-node-select").blur()
     currentSelectForm.clearInputs();
-    
+    document.getElementById("current-node-select").blur()
 }
 
 export function removeCurrent(renderer: StoryRenderer, removeCurrentForm) {
@@ -43,9 +44,36 @@ export function removeCurrent(renderer: StoryRenderer, removeCurrentForm) {
     } else {
         throw new Error("Root node cannot be removed.")
     }
-    removeCurrentForm.hide()
+    removeCurrentForm.hide();
 }
+
+export function saveState(renderer: StoryRenderer, savePopup: DynamicElement) {
+    savePopup.show()
+    let failedSave = setTimeout(()=>{
+        alert("Save process took too long. There may be an error.")
+    }, 5000)
+    writeStoryData(renderer.story, renderer.sessionID)
+    setTimeout(()=>{
+        savePopup.fadeOut(500)
+    }, 1000)
+    clearInterval(failedSave)
+}
+
+export function renderPreview(renderer: StoryRenderer) {
+    let iframe = <HTMLIFrameElement>document.getElementById("preview-frame")
+    iframe.srcdoc = `
+    <html>
+        <head>
+            <link rel="stylesheet" href="./userPreviewStyle.css">
+        </head>
+        <body>
+            <div id="story-content-preview">${renderer.story.currentNode.content}</div>
+        </body>
+    </html>`
+}
+
 
 function lastCharIsNum(string): boolean {
     return parseInt(string.charAt(string.length - 1)) != NaN
 }
+

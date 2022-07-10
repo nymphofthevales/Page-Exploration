@@ -2,11 +2,14 @@
 import {Story, StoryNode, StoryOption, readStoryData } from "./story.js"
 import { Form } from "./form.js"; 
 import { forEachInClass } from "./dom_helpers.js";
+import { renderPreview } from "./application_actions.js";
 
 export class StoryRenderer {
+    sessionID: string
     story: Story
-    constructor (story: Story) {
+    constructor (story: Story, title: string) {
         this.story = story
+        this.sessionID = title + "-" + Date.now()
         this.render()
     }
     render() {
@@ -20,10 +23,10 @@ export class StoryRenderer {
         this.story.currentNode.content = content
     }
     setContentViewer() {
-        let contentViewer = document.getElementById("current-content-editor")
+        let contentViewer = <HTMLTextAreaElement>document.getElementById("current-content-editor")
         let titleViewer = document.getElementById("current-title")
         let current = this.story.currentNode
-        contentViewer.innerText = current.content
+        contentViewer.value = current.content
         titleViewer.innerText = this.story.title(current)
     }
     setAncestorViewer() {
@@ -31,10 +34,6 @@ export class StoryRenderer {
             element.remove()
         })
         let currentAncestors = this.story.ancestralAdjacencies(this.story.currentNode)
-        console.log(currentAncestors)
-        console.log(this.story.ancestralAdjacencyMap)
-        console.log(this.story.adjacencyMap)
-        console.log(this.story.titles)
         currentAncestors.forEach((storyNode)=>{
             this.placeAncestorNode(storyNode)
         })
@@ -44,7 +43,6 @@ export class StoryRenderer {
             element.remove()
         })
         let currentOptions = this.story.options(this.story.currentNode)
-        console.log(currentOptions)
         currentOptions.forEach((option)=>{
             this.placeChildNode(option)
         })
@@ -156,7 +154,7 @@ export class StoryRenderer {
     }
     generateNodeTitlesList() {
         let nodeTitles = []
-        this.story.forEachNode((node, title, )=>{
+        this.story.forEachNode((node, title)=>{
             let lastElement = nodeTitles[nodeTitles.length - 1]
             if (lastElement != undefined) {
                 if (title.length >= lastElement.length) {
@@ -184,10 +182,12 @@ export class StoryRenderer {
     traverseOption(option) {
         this.story.traverse(option)
         this.render()
+        renderPreview(this)
     }
     traverseTo(node: StoryNode) {
-        this.story.currentNode = node
+        this.story.current = node
         this.render()
+        renderPreview(this)
     }
 }
 

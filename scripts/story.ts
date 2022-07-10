@@ -186,10 +186,24 @@ export function readStoryData(filename: string): Story {
     return story
 }
 
-export function writeStoryData(story: Story) {
-    story.forEachNode(()=>{
-        
+export function writeStoryData(story: Story, sessionID: string) {
+    let save = {}
+    let backup = "./data/" + sessionID + ".json"
+    let filename = "./data/" + sessionID.split('-')[0] + ".json"
+    story.forEachNode((node: StoryNode, title: string)=>{
+        save[title] = {
+            "content": node.content,
+            "options": []
+        }
+        story.options(node).forEach((option: StoryOption)=>{
+            save[title].options.push({
+                "text": option.text,
+                "destination": story.title(option.destination)
+            })
+        })
     })
+    fs.writeFileSync(backup, fs.readFileSync(filename))
+    fs.writeFileSync(filename, JSON.stringify(save))
 }
 
 //document to make it clearer on what happens when a node doesn't exist in the story, but is referenced anyway. desired behaviour is that that node should be created empty with the given title under the assumption that is should exist if it's being called, and since it's at that title, it will be given content later. since Maps and Sets can only store unique entries, adding a node with the same name later will overwrite the empty one.

@@ -10,6 +10,20 @@ export class DynamicElement {
     hide() {
         this.reference.classList.add('hidden')
     }
+    fadeOut(ms: number) {
+        setTimeout(()=>{
+            this.hide()
+            this.reference.style.animation = ``
+        }, ms)
+        this.reference.style.animation = `dynamicElementFadeOut ${ms/1000}s`
+    }
+    fadeIn(ms: number) {
+        setTimeout(()=>{
+            this.show()
+            this.reference.style.animation = ``
+        }, ms)
+        this.reference.style.animation = `dynamicElementFadeIn ${ms/1000}s`
+    }
     show() {
         console.log(this.reference.classList)
         this.reference.classList.remove("hidden")

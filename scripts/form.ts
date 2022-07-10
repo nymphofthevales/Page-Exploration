@@ -32,8 +32,6 @@ export class Form extends DynamicElement {
             let element = <HTMLInputElement>this.inputs[key]
             if (element.type == "checkbox") {
                 this.values[key] = element.checked
-            } else if (element.tagName == "TEXTAREA") {
-                this.values[key] = element.innerText
             } else {
                 this.values[key] = element.value
             }
