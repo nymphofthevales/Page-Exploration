@@ -2,7 +2,6 @@
 import {Story, StoryNode, StoryOption, readStoryData } from "./story.js"
 import { Form } from "./form.js"; 
 import { forEachInClass } from "./dom_helpers.js";
-import { renderPreview } from "./application_actions.js";
 
 export class StoryRenderer {
     sessionID: string
@@ -13,10 +12,74 @@ export class StoryRenderer {
         this.render()
     }
     render() {
+        this.renderEditorView()
+        this.renderStoryView()
+    }
+    renderEditorView() {
         this.setContentViewer()
         this.setChildViewer()
         this.setAncestorViewer()
         this.updateStoryNodeLists()
+        this.renderPreview()
+    }
+    renderStoryView() {
+        this.setStoryText()
+        this.setStoryOptions()
+        this.handleNodeTraversalEffects()
+    }
+    clearStoryText() {
+        document.getElementById("story-text").innerHTML = ""
+    }
+    setStoryText() {
+        this.clearStoryText()
+        let current = this.story.currentNode
+        document.getElementById("story-text").innerHTML = current.content
+    }
+    clearStoryOptions() {
+        document.getElementById("story-options").innerHTML = ""
+    }
+    setStoryOptions() {
+        this.clearStoryOptions()
+        let current = this.story.currentNode
+        let currentOptions = this.story.options(current)
+        let storyOptionsFrame = document.getElementById("story-options")
+        currentOptions.forEach((option, same, set)=>{
+            if (!option.disabled) {
+                let title = this.story.title(option.destination)
+                let optionText = option.text
+                //TODO OPTION IDENTITY
+                storyOptionsFrame.appendChild(this.generateStoryOptionDOMNode(title, optionText))
+                document.getElementById(`story-option-${title}`).addEventListener('mouseup', ()=>{
+                    this.traverseOption(option)
+                })
+            }
+        })
+    }
+    handleNodeTraversalEffects() {
+        if (this.story.currentNode.hasTraversalEffects) {
+            //place images, etc
+        }
+    }
+    generateStoryOptionDOMNode(title, optionText): Node {
+        let wrapper = document.createElement("div")
+        wrapper.innerHTML = this.generateStoryOptionButtonHTML(title, optionText)
+        return wrapper.firstChild
+    }
+    generateStoryOptionButtonHTML(title, optionText): string {
+        //TODO OPTION IDENTITY switch to better identifier system. using node titles is dangerous when multiple options point to same node.
+        return `<button id="story-option-${title}"> ${optionText} </button>`
+    }
+    renderPreview() {
+        let iframe = <HTMLIFrameElement>document.getElementById("preview-frame")
+        iframe.srcdoc = `
+        <html>
+            <head>
+                <link rel="stylesheet" href="./userPreviewStyle.css">
+            </head>
+            <body>
+                <div id="story-content-preview">${this.story.currentNode.content}</div>
+            </body>
+        </html>`
     }
     setCurrentData(currentEditorForm) {
         let { content } = currentEditorForm.read()
@@ -67,11 +130,12 @@ export class StoryRenderer {
     }
     placeChildNode(option: StoryOption): void {
         let viewer = <HTMLDivElement>document.getElementById("children")
-        let title = this.story.title(option.destination) 
+        let title = this.story.title(option.destination)
         let content = option.destination.content
         content = content.slice(0,50) + "..."
         let childNode = this.createChildNodeDOMNode(title, option.text)
         viewer.appendChild(childNode)
+        //TODO OPTION IDENTITY
         document.getElementById(`child-${title}-content-preview`).innerText = content
         document.getElementById(`remove-child-${title}`).addEventListener('mouseup',(e)=>{
             this.removeChild(title, option)
@@ -88,6 +152,7 @@ export class StoryRenderer {
         return wrapper.firstChild
     }
     generateChildNodeInnerHTML(title: string, optionText: string): string {
+        //TODO OPTION IDENTITY
         return `<div id="child-${title}-bundle" class="child-bundle">
                 <form action="javascript:void(0);" id="child-${title}-option-form" class="option-form">
                 <label for="child-${title}-option-text">Story option:</label>
@@ -105,6 +170,7 @@ export class StoryRenderer {
         document.getElementById(`child-${title}-bundle`).remove();
         this.updateStoryNodeLists()
     }
+
     placeAncestorNode(ancestor: StoryNode) {
         let viewer = <HTMLDivElement>document.getElementById("ancestors")
         let title = this.story.title(ancestor)
@@ -130,6 +196,7 @@ export class StoryRenderer {
         </button>
         `
     }
+
     updateStoryNodeLists() {
         //TEMP iterating through all nodes every time may cause performance issues.
         let nodeTitles = this.generateNodeTitlesList()
@@ -137,10 +204,11 @@ export class StoryRenderer {
         nodeTitles.sort()
         forEachInClass("story-node-selector", (element)=>{
             element.innerHTML = ''
-            this.appendNodeTitleList(element, nodeTitles, longestSize)
+            this.appendNodeTitleOptionList(element, nodeTitles, longestSize)
         })
+        this.appendNodeTitleLiList(document.getElementById("node-index-ul"), nodeTitles)
     }
-    appendNodeTitleList(select, nodeTitles, longestSize) {
+    appendNodeTitleOptionList(select, nodeTitles, longestSize) {
         for (let i=0; i < nodeTitles.length; i++) {
             let title = nodeTitles[i]
             let opt = document.createElement("option")
@@ -149,6 +217,21 @@ export class StoryRenderer {
             optionReference.value = title;
             let previewText = this.generateNodeSelectPreviewText(title, longestSize)
             optionReference.innerText = `${title}: ${previewText}` 
+        }
+    }
+    appendNodeTitleLiList(list, nodeTitles) {
+        list.innerHTML = "";
+        for (let i=0; i < nodeTitles.length; i++) {
+            let title = nodeTitles[i]
+            let li = document.createElement("li")
+            list.appendChild(li).id=`story-node-index-${title}`
+            let liReference = <HTMLLIElement>document.getElementById(`story-node-index-${title}`)
+            liReference.innerHTML = `<a id="story-node-index-${title}-link">${title}</a>`
+            document.getElementById(`story-node-index-${title}-link`).addEventListener('click', ()=>{
+                this.traverseTo(this.story.node(title))
+                document.getElementById("popup-overlay").classList.add("hidden")
+                document.getElementById("node-index").classList.add("hidden")
+            })
         }
     }
     generateNodeTitlesList() {
@@ -181,12 +264,10 @@ export class StoryRenderer {
     traverseOption(option) {
         this.story.traverse(option)
         this.render()
-        renderPreview(this)
     }
     traverseTo(node: StoryNode) {
         this.story.current = node
         this.render()
-        renderPreview(this)
     }
 }
 

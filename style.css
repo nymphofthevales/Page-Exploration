@@ -42,14 +42,30 @@ textarea {
 .uibutton:active {
     background-color:#ff8899;
 }
-#application {
+#editor-view, #player-view {
+    position: absolute;
+    top: 0; 
+    left: 0;
     height: 100vh;
     width: 100vw;
     padding: 50px;
+    background-color: black;
+}
+#editor-view {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+}
+#application-tabs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    z-index: 8;
+}
+#application-tabs button {
+    display: inline;
 }
 #labels {
     width: 20%;
@@ -182,6 +198,11 @@ datalist {
     color: black
 }
 
+#conditional-options-selection label {
+    display: block;
+    margin-top: 20px;
+}
+
 .child-node {
     border: none;
     height: 70%;
@@ -263,4 +284,92 @@ datalist {
     100% {
         opacity: 1;
     }
+}
+
+a {
+    text-decoration: underline;
+}
+a:hover {
+    text-decoration: dotted;
+}
+a:active {
+    text-decoration: none;
+}
+#node-index {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 80vh;
+    z-index: 10;
+    padding: 100px 50px;;
+    border: 1px solid white;
+    background-color: black;
+}
+#node-index-scrollbox {
+    overflow: scroll;
+    height: 100%;
+    width: 100%;
+}
+#node-index-close {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    font-size: 1.5em;
+    outline: 1px solid white;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}
+#node-index-close:hover {
+    color: #555555;
+}
+#node-index-close:active {
+    color: #000000;
+    background-color: white;
+}
+#node-index-ul li {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+#story-frame {
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+#story-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#story-text {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    line-height: 1.8;
+    font-size: 1.1em;
+    max-width: 60vw;
+}
+#story-options button {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.1em;
+    border: 1px solid white;
+    margin: 50px;
+    padding: 10px 20px;
+}
+#story-options button:hover {
+    background-color:#770033;
+}
+#story-options button:active {
+    background-color:#ff8899;
+}
+
+.labyrinth-color {
+color: #a02090;
+}
+
+.crow-color {
+color: #6040c0;
 }

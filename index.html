@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="application">
+    <div id="application-tabs">
+        <button id="editor-view-selector" class="uibutton">Editor View</button>
+        <button id="player-view-selector" class="uibutton">Player View</button>
+    </div>
+    <div id="editor-view">
         <div id="labels">
             <div id="ancestors-label">
                 <h2>Ancestor Nodes</h2>
@@ -24,6 +28,7 @@
                     </input>
                 </form>
                 <button id="remove-current" class="uibutton">Remove Current Node</button>
+                <button id="view-node-index" class="uibutton">View Node Index</button>
                 <button id="save" class="uibutton">Save All Changes</button>
                 <form action="javascript:void(0);" id="remove-current-form" class="hidden">
                     <h2>Remove Current Node</h2>
@@ -32,6 +37,12 @@
                     <button id="remove-current-confirm" class="uibutton">Remove</button>
                     <button id="remove-current-cancel" class="uibutton">Cancel</button>
                 </form>
+                <div id="node-index" class="hidden">
+                    <button id="node-index-close">X</button>
+                    <div id="node-index-scrollbox">
+                        <ul id="node-index-ul"></ul>
+                    </div>
+                </div>
             </div>
             <div id="child-label">
                 <h2>Child Nodes</h2>
@@ -58,6 +69,21 @@
                 <div id="current-node-content-preview">
                     <iframe frameborder="0" id="preview-frame"></iframe>
                 </div>
+                <form action="javascript:void(0);">
+                    <div id="conditional-options-header">
+                        <h2 id="conditional-title">Conditional Story Options</h2>
+                        <label for=""></label>
+                    </div>
+                    <fieldset id="conditional-options-selection">
+                        <label><input type="checkbox" id="conditional-options-0">"Assay your tools" => <i>inventory</i></label>
+                        <label><input type="checkbox" id="conditional-options-1">"Move on" => <i>MoveOnAnte</i></label>
+                        <label><input type="checkbox" id="conditional-options-2">"Toss the runes" => <i>CastRunes</i></label>
+                        <label><input type="checkbox" id="conditional-options-3" checked>"Leave the antechamber" => <i>LeaveAnte</i></label>
+                            <fieldset id="conditional-options-3-form">
+                                <p>options here...</p>
+                            </fieldset>
+                    </fieldset>
+                </form>
             </div>
     
             <div id="children" class="node-viewer">
@@ -85,6 +111,13 @@
     <div id="popup-overlay" class="hidden"></div>
     <div id="save-popup" class="hidden">
         <p>Saving . . .</p>
+    </div>
+    <div id="player-view" class="hidden">
+        <div id="story-frame">
+            <section id="story-text"></section>
+            <section id="story-options"></section>
+        </div>
+        <div id="image-frame"></div>
     </div>
 </body>
 </html>

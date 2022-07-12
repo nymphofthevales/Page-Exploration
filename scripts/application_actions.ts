@@ -72,6 +72,17 @@ export function renderPreview(renderer: StoryRenderer) {
     </html>`
 }
 
+export function switchTabView(tabViewIsEditor: boolean, playerView, editorView) {
+    if (tabViewIsEditor) {
+        playerView.show(); 
+        editorView.hide(); 
+        return false;
+    } else {
+        playerView.hide();
+        editorView.show();
+        return true;
+    }
+}
 
 function lastCharIsNum(string): boolean {
     return parseInt(string.charAt(string.length - 1)) != NaN

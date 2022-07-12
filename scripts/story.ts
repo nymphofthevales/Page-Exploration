@@ -1,10 +1,43 @@
 
 const fs = require("fs")
 
+export interface MusicEffectsObject {
+    fadeIn: boolean,
+    fadeInTime: number,
+    fadeOut: boolean,
+    fadeOutTime: number
+    //etc etc tbd
+}
+
+export interface StoryNodeTraversalEffectsObject {
+    image: boolean,
+    imageURL: string,
+    persistentImage: boolean,
+    music: boolean,
+    musicURL: string,
+    musicEffects: MusicEffectsObject,
+    scoreChanges: Array<[string, number]>
+}
+
+function unsetTraversalEffects() {
+    return {
+        image: false,
+        imageURL: "",
+        persistentImage: false,
+        music: false,
+        musicURL: "",
+        musicEffects: { fadeIn: false, fadeInTime: 0, fadeOut: false, fadeOutTime: 0 },
+        scoreChanges: []
+    }
+}
+
 export class StoryNode {
     content: string
-    constructor(content?: string) {
-        this.content = content? content : ''
+    hasTraversalEffects: boolean
+    traversalEffects: StoryNodeTraversalEffectsObject
+    constructor(content?: string, traversalEffects?: StoryNodeTraversalEffectsObject) {
+        this.content = content ? content : ''
+        traversalEffects = traversalEffects ?  traversalEffects : unsetTraversalEffects()
     }
 }
 
@@ -12,9 +45,11 @@ export class StoryOption {
     disabled: boolean = false
     text: string = ''
     destination: StoryNode
+    optionID: string
     constructor(text: string, destination: StoryNode) {
         this.text = text
         this.destination = destination
+        this.optionID = "OPT-" + (Math.floor(Math.random() * 10) + Date.now())
     }
 }
 
