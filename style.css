@@ -345,6 +345,7 @@ a:active {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 }
 #story-text {
     font-family: Georgia, 'Times New Roman', Times, serif;
@@ -356,7 +357,7 @@ a:active {
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-size: 1.1em;
     border: 1px solid white;
-    margin: 50px;
+    margin: 20px;
     padding: 10px 20px;
 }
 #story-options button:hover {

@@ -1,7 +1,7 @@
 
 import {Story, StoryNode, StoryOption, readStoryData } from "./story.js"
 import { Form } from "./form.js"; 
-import { forEachInClass } from "./dom_helpers.js";
+import { forEachInClass, listen } from "./dom_helpers.js";
 
 export class StoryRenderer {
     sessionID: string
@@ -21,6 +21,7 @@ export class StoryRenderer {
         this.setAncestorViewer()
         this.updateStoryNodeLists()
         this.renderPreview()
+        this.fillConditionalOptionsMenu()
     }
     renderStoryView() {
         this.setStoryText()
@@ -137,14 +138,22 @@ export class StoryRenderer {
         viewer.appendChild(childNode)
         //TODO OPTION IDENTITY
         document.getElementById(`child-${title}-content-preview`).innerText = content
-        document.getElementById(`remove-child-${title}`).addEventListener('mouseup',(e)=>{
-            this.removeChild(title, option)
-        })
-        let childOptionForm = new Form(`child-${title}-option-form`)
-        childOptionForm.submitInput = `child-${title}-option-text`
-        document.getElementById(`child-${title}-traversal`).addEventListener("click",()=>{
-            this.traverseOption(option)
-        })
+        this.setupChildOptionForm(option, `child-${title}-option-text`)
+        listen(`child-${title}-traversal`, `click`, ()=>{ this.traverseOption(option) })
+        listen(`remove-child-${title}`, `mouseup`, ()=>{ this.removeChild(title, option) })
+    }
+    setupChildOptionForm(option, id) {
+        let childOptionForm = new Form(id)
+        childOptionForm.addInput("text", id)
+        childOptionForm.submitInput = id
+        childOptionForm.onSubmit = () => { 
+            this.changeOptionText(option, childOptionForm) 
+            this.render()
+        }
+    }
+    changeOptionText(option, childOptionForm) {
+        let { text } = childOptionForm.read()
+        option.text = text;
     }
     createChildNodeDOMNode(title, optionText): Node {
         let wrapper = document.createElement("div")
@@ -260,6 +269,28 @@ export class StoryRenderer {
         }
         let previewText = this.story.node(title).content.slice(0,previewLength)
         return previewText
+    }
+
+    fillConditionalOptionsMenu() {
+        let current = this.story.currentNode
+        let currentOptions = this.story.options(current)
+        let optionsMenu = document.getElementById("conditional-options-selection")
+        optionsMenu.innerHTML = "";
+        currentOptions.forEach((option, same, set)=>{
+            let conditionalOption = this.createConditionalOptionDOMNode(option)
+            optionsMenu.appendChild(conditionalOption)
+        })
+    }
+    createConditionalOptionDOMNode(option): Node {
+        let wrapper = document.createElement("div")
+        wrapper.innerHTML = this.generateConditionalOptionHTML(option)
+        return wrapper.firstChild
+    }
+    generateConditionalOptionHTML(option): string {
+        //TODO OPTION IDENTITY
+        let destinationTitle = this.story.title(option.destination)
+        let optionText = option.text.length < 25 ? option.text : option.text.slice(0,25);
+        return `<label><input type="checkbox" id="conditional-options-${destinationTitle}"> "${optionText}" => <i>${destinationTitle}</i></label>`
     }
     traverseOption(option) {
         this.story.traverse(option)
