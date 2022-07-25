@@ -1,6 +1,6 @@
 
 import { DynamicElement } from "./dynamicElement.js"
-import { Story, writeStoryData } from "./story.js"
+import { writeStoryData } from "./StoryIO.js"
 import { StoryRenderer } from "./StoryRenderer.js"
 let fs = require("fs")
 

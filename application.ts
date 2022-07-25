@@ -1,5 +1,5 @@
 import { StoryRenderer } from "./scripts/StoryRenderer.js" 
-import {readStoryData } from "./scripts/story.js"
+import { readStoryData } from "./scripts/StoryIO.js"
 import { listen } from "./scripts/dom_helpers.js"
 import { toMiliseconds } from "./scripts/time_helpers.js"
 import { 
@@ -25,6 +25,7 @@ import { DynamicElement } from "./scripts/dynamicElement.js"
 let labyrinth = readStoryData("labyrinth")
 labyrinth.current = labyrinth.node("intro")
 let renderer = new StoryRenderer(labyrinth, "labyrinth")
+
 let playerView = new DynamicElement("player-view")
 let editorView = new DynamicElement("editor-view")
 let savePopup = new DynamicElement("save-popup")
@@ -34,6 +35,7 @@ let nodeIndex = new DynamicElement("node-index")
 let tabViewIsEditor = true;
 
 useEnterToSubmit();
+renderer.render();
 renderer.renderPreview();
 
 window.setInterval(()=>{

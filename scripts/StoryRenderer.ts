@@ -1,5 +1,7 @@
 
-import {Story, StoryNode, StoryOption, readStoryData } from "./story.js"
+import {Story, StoryNode } from "./story.js"
+import { StoryOption } from "./StoryOption.js"
+import { readStoryData } from "./StoryIO.js"
 import { Form } from "./form.js"; 
 import { forEachInClass, listen } from "./dom_helpers.js";
 
@@ -9,7 +11,6 @@ export class StoryRenderer {
     constructor (story: Story, title: string) {
         this.story = story
         this.sessionID = title + "-" + Date.now()
-        this.render()
     }
     render() {
         this.renderEditorView()
@@ -58,7 +59,7 @@ export class StoryRenderer {
     }
     handleNodeTraversalEffects() {
         if (this.story.currentNode.hasTraversalEffects) {
-            //place images, etc
+            //trigger image, music, etc. events
         }
     }
     generateStoryOptionDOMNode(title, optionText): Node {
