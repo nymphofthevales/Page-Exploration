@@ -79,7 +79,7 @@ export type ScoreDependencyData = {
 interface PlayerScoresList {
     [scoreName: string]: number
 }
-class ScoreDependencySet {
+export class ScoreDependencySet {
     isFulfilled: (playerScores: PlayerScoresList) => boolean
     dependencyData: ScoreDependencyData
     constructor(dependencyData: ScoreDependencyData)  {
@@ -123,7 +123,7 @@ export type NodeDependencyData = {
     nodes: Array<string>,
     connectives: Array<"and" | "or">
 }
-class NodeDependencySet {
+export class NodeDependencySet {
     isFulfilled: (visitedNodes: Set<string>) => boolean
     dependencyData: NodeDependencyData
     constructor(dependencyData: NodeDependencyData) {

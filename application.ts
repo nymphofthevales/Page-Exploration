@@ -17,14 +17,16 @@ import {
     switchTabView
 } from "./scripts/application_actions.js"
 import { DynamicElement } from "./scripts/dynamicElement.js"
+import { Story } from "./scripts/story.js"
 
 //TODO for changing node titles, use recursive backpropogation 
 //algorithm double link list graph aliasing over the ancestral nodes set
 
 /*TEMP eventually add a setup form to initialize a new story, but current purpose is to edit labyrinth.*/
-let labyrinth = readStoryData("labyrinth")
-labyrinth.current = labyrinth.node("intro")
-let renderer = new StoryRenderer(labyrinth, "labyrinth")
+//let labyrinth = readStoryData("labyrinth")
+//labyrinth.current = labyrinth.node("intro")
+//let renderer = new StoryRenderer(labyrinth, "labyrinth")
+let renderer = new StoryRenderer(new Story(), "sample_data")
 
 let playerView = new DynamicElement("player-view")
 let editorView = new DynamicElement("editor-view")

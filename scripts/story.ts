@@ -1,7 +1,5 @@
 import { StoryOption } from "./StoryOption.js"
 
-const fs = require("fs")
-
 export interface MusicEffectsObject {
     fadeIn: boolean,
     fadeInTime: number,
@@ -55,7 +53,7 @@ export class Story {
     currentNode: StoryNode
     constructor () {
         this.addNode('root', new StoryNode())
-        this.currentNode = this.nodes.get('root') as StoryNode
+        this.current = this.nodes.get('root') as StoryNode
     }
     /**
      * Checks whether the specified node or node title exists in the story.
@@ -176,4 +174,3 @@ export class Story {
         return disconnectedNodes
     }
 }
-//document to make it clearer on what happens when a node doesn't exist in the story, but is referenced anyway. desired behaviour is that that node should be created empty with the given title under the assumption that is should exist if it's being called, and since it's at that title, it will be given content later. since Maps and Sets can only store unique entries, adding a node with the same name later will overwrite the empty one.
