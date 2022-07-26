@@ -41,7 +41,7 @@ function createOptionFromRead(story: Story, optionData: StoryOptionData): StoryO
         destinationNode = new StoryNode()
         story.addNode(destination, destinationNode)
     }
-    let isConditional = conditions ? false : true;
+    let isConditional = conditions ? true : false;
     return new StoryOption(text, destinationNode, isConditional, conditions?.storyNodeDependencies, conditions?.scoreDependencies)
 }
 

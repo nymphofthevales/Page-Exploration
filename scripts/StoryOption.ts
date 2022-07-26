@@ -18,7 +18,7 @@ export class StoryOption {
         scoreDependencies?: Array<ScoreDependencyData>) {
         this.text = text
         this.destination = destination
-        this.isConditional = isConditional ? false : isConditional;
+        this.isConditional = isConditional ? isConditional : false;
         if (this.isConditional) {
             if (nodeDependencies) {
                 this.conditions.isVisitedNodesDependant = true;
