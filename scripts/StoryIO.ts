@@ -1,6 +1,6 @@
 
 import { Story, StoryNode } from "./Story.js"
-import { StoryOption, NodeDependencyData, ScoreDependencyData, NodeDependencySet, ScoreDependencySet } from "./StoryOption.js"
+import { StoryOption, NodeDependencyData, ScoreDependencyData, NodeDependencyRule, ScoreDependencyRule } from "./StoryOption.js"
 const fs = require("fs");
 
 interface StoryNodeData {
@@ -10,6 +10,7 @@ interface StoryNodeData {
 interface StoryOptionData {
     "text": string,
     "destination": string,
+    "disabled": boolean,
     "conditions"?: {
         storyNodeDependencies: NodeDependencyData[],
         scoreDependencies: ScoreDependencyData[]
@@ -19,14 +20,14 @@ interface StoryOptionData {
 export function readStoryData(filename: string): Story {
     let story = new Story()
     let storyData = JSON.parse(fs.readFileSync("./data/" + filename + ".json"))
+    console.log(storyData)
     let nodes = Object.keys(storyData)
     for (let i=0; i < nodes.length; i++) {
         let title = nodes[i]
         let currentNodeData = storyData[title]
         let { content, options }  = <StoryNodeData>currentNodeData
-        let node = new StoryNode(content)
-
-        story.addNode(title, node)
+        let node = new StoryNode(content);
+        node = story.addNode(title, node)
         for (let j = 0; j < options.length; j++) {
             let option = createOptionFromRead(story, options[j])
             story.addOption(node, option)
@@ -35,14 +36,21 @@ export function readStoryData(filename: string): Story {
     return story
 }
 function createOptionFromRead(story: Story, optionData: StoryOptionData): StoryOption {
-    let { text, destination, conditions } = optionData;
+    let { text, destination, disabled, conditions } = optionData;
     let destinationNode = story.node(destination)
     if (destinationNode == undefined) {
         destinationNode = new StoryNode()
         story.addNode(destination, destinationNode)
     }
     let isConditional = conditions ? true : false;
-    return new StoryOption(text, destinationNode, isConditional, conditions?.storyNodeDependencies, conditions?.scoreDependencies)
+    let isDefaultDisabled = disabled ? true : false;
+    return new StoryOption(
+        text, 
+        destinationNode, 
+        isDefaultDisabled,
+        isConditional, 
+        conditions?.storyNodeDependencies, 
+        conditions?.scoreDependencies)
 }
 
 export function writeStoryData(story: Story, sessionID: string) {
@@ -57,7 +65,8 @@ export function writeStoryData(story: Story, sessionID: string) {
         story.options(node).forEach((option: StoryOption) => {
             let optionData = {
                 "text": option.text,
-                "destination": story.title(option.destination)
+                "destination": story.title(option.destination),
+                "disabled": option.isDefaultDisabled
             }
             if (option.isConditional) {
                 optionData["conditions"] = {
@@ -92,12 +101,12 @@ function fillOptionDataDependencies(option, optionData) {
     }
 }
 function fillNodeDependencies(option, optionData) {
-    option.conditions.nodeDependencies.forEach((dependencySet: NodeDependencySet)=>{ 
-        optionData["conditions"].nodeDependencies.push( dependencySet.dependencyData ) 
+    option.conditions.nodeDependencies.forEach((dependencyRule: NodeDependencyRule)=>{ 
+        optionData["conditions"].nodeDependencies.push( dependencyRule.dependencyData ) 
     })
 }
 function fillScoreDependencies(option, optionData) {
-    option.conditions.scoreDependencies.forEach((dependencySet: ScoreDependencySet)=>{ 
-        optionData["conditions"].scoreDependencies.push( dependencySet.dependencyData ) 
+    option.conditions.scoreDependencies.forEach((dependencyRule: ScoreDependencyRule)=>{ 
+        optionData["conditions"].scoreDependencies.push( dependencyRule.dependencyData ) 
     })
 }

@@ -1,7 +1,7 @@
 import { StoryNode, Story } from "./Story.js"
 
 export class StoryOption {
-    disabled: boolean = false
+    isDefaultDisabled: boolean = false
     text: string = ''
     destination: StoryNode
     optionID: string
@@ -9,44 +9,65 @@ export class StoryOption {
     conditions: {
         isVisitedNodesDependant: boolean,
         isScoreThresholdDependant: boolean
-        nodeDependencies: Set<NodeDependencySet>
-        scoreDependencies: Set<ScoreDependencySet>
+        nodeDependencies: Set<NodeDependencyRule>
+        scoreDependencies: Set<ScoreDependencyRule>
     }
     constructor(text: string, destination: StoryNode, 
+        isDefaultDisabled?: boolean,
         isConditional?: boolean, 
         nodeDependencies?: Array<NodeDependencyData>, 
         scoreDependencies?: Array<ScoreDependencyData>) {
         this.text = text
         this.destination = destination
+        this.isDefaultDisabled = isDefaultDisabled ? isDefaultDisabled : false;
         this.isConditional = isConditional ? isConditional : false;
         if (this.isConditional) {
             if (nodeDependencies) {
                 this.conditions.isVisitedNodesDependant = true;
                 this.conditions.nodeDependencies = new Set();
-                nodeDependencies.forEach((dependencySetData)=>{
-                    this.conditions.nodeDependencies.add(new NodeDependencySet(dependencySetData))
+                nodeDependencies.forEach((dependencyRuleData)=>{
+                    this.conditions.nodeDependencies.add(new NodeDependencyRule(dependencyRuleData))
                 })
             }
             if (scoreDependencies) {
                 this.conditions.isScoreThresholdDependant = true;
                 this.conditions.scoreDependencies = new Set();
-                scoreDependencies.forEach((dependencySetData)=>{
-                    this.conditions.scoreDependencies.add(new ScoreDependencySet(dependencySetData))
+                scoreDependencies.forEach((dependencyRuleData)=>{
+                    this.conditions.scoreDependencies.add(new ScoreDependencyRule(dependencyRuleData))
                 }) 
             }
         }
         this.optionID = "OPT-" + (Math.floor(Math.random() * 10) + Date.now())
     }
-    computeDisabledValue(visitedNodes): boolean {
-        //determine whether the given option should be "disabled" or not, considering the logic given by the user.
+    setDisabled(value: boolean) {
+        this.isDefaultDisabled = true;
+    }
+    isDisabled(visitedNodes: Set<StoryNode>): boolean {
+        if (this.isDefaultDisabled) {
+            return true;
+        } else {
+            return this.computeDisabledValue(visitedNodes)
+        }
+    }
+    /**
+     * Computes how the "disabled" flag should be set depending on the internal logic set by the writer.
+     * Disabled value determines whether the option should be shown to the player on the node to which it is linked. 
+     * If an option's "disabled" flag is set to true, it will not be shown.
+     * Options may be disabled by three factors.
+     * 1. May be flagged as permanently disabled for development purposes.
+     * 2. May be dependant on the presence of certain StoryNodes in the player's visitedNodes history.
+     * 3. May be dependant on the values of certain scores incremented by writer-set StoryNode Effects.
+    */
+    computeDisabledValue(visitedNodes: Set<StoryNode>): boolean {
         if (this.isConditional) {
-            if (this.conditions.isScoreThresholdDependant) {
-                if (this.conditions.isVisitedNodesDependant) {
+            let c = this.conditions;
+            if (c.isScoreThresholdDependant) {
+                if (c.isVisitedNodesDependant) {
                     return this.fulfillsNodeDependencies(visitedNodes) && this.fulfillsScoreThresholds(visitedNodes);
                 } else {
                     return this.fulfillsScoreThresholds(visitedNodes);
                 }
-            } else if (this.conditions.isVisitedNodesDependant) {
+            } else if (c.isVisitedNodesDependant) {
                 return this.fulfillsNodeDependencies(visitedNodes);
             } else {
                 return false;
@@ -61,10 +82,14 @@ export class StoryOption {
     fulfillsScoreThresholds(visitedNodes: Set<StoryNode>): boolean {
         return this.isFulfilled("scoreDependencies", visitedNodes)
     }
+    /**
+     * Iterates over the set of dependency rules of the given type for this node.
+     * @returns a boolean value representing the universal quantification of all rules of the given type.
+    */
     isFulfilled(dependencyType: string, visitedNodes: Set<StoryNode>): boolean {
         let fulfilled = true;
-        fulfilled = this.conditions[dependencyType].forEach((dependencySet) => {
-            return fulfilled && dependencySet.isFulfilled(visitedNodes);
+        fulfilled = this.conditions[dependencyType].forEach((dependencyRule) => {
+            return fulfilled && dependencyRule.isFulfilled(visitedNodes);
         })
         return fulfilled
     }
@@ -79,7 +104,7 @@ export type ScoreDependencyData = {
 interface PlayerScoresList {
     [scoreName: string]: number
 }
-export class ScoreDependencySet {
+export class ScoreDependencyRule {
     isFulfilled: (playerScores: PlayerScoresList) => boolean
     dependencyData: ScoreDependencyData
     constructor(dependencyData: ScoreDependencyData)  {
@@ -123,7 +148,7 @@ export type NodeDependencyData = {
     nodes: Array<string>,
     connectives: Array<"and" | "or">
 }
-export class NodeDependencySet {
+export class NodeDependencyRule {
     isFulfilled: (visitedNodes: Set<string>) => boolean
     dependencyData: NodeDependencyData
     constructor(dependencyData: NodeDependencyData) {

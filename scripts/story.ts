@@ -36,7 +36,7 @@ export class StoryNode {
     traversalEffects: StoryNodeTraversalEffectsObject
     constructor(content?: string, traversalEffects?: StoryNodeTraversalEffectsObject) {
         this.content = content ? content : ''
-        traversalEffects = traversalEffects ?  traversalEffects : unsetTraversalEffects()
+        this.traversalEffects = traversalEffects ?  traversalEffects : unsetTraversalEffects()
     }
 }
 
@@ -53,7 +53,7 @@ export class Story {
     currentNode: StoryNode
     constructor () {
         this.addNode('root', new StoryNode())
-        this.current = this.nodes.get('root') as StoryNode
+        this.setCurrent( this.nodes.get('root') )
     }
     /**
      * Checks whether the specified node or node title exists in the story.
@@ -153,7 +153,7 @@ export class Story {
         }
         return this.currentNode
     }
-    set current (node: StoryNode) {
+    setCurrent(node: StoryNode) {
         if (this.has(node)) {
             this.currentNode = node
         }

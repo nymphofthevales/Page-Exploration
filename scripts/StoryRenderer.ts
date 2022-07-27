@@ -5,12 +5,21 @@ import { readStoryData } from "./StoryIO.js"
 import { Form } from "./form.js"; 
 import { forEachInClass, listen } from "./dom_helpers.js";
 
+export class ReaderState {
+    visitedNodes: Set<StoryNode>
+    scores: {[name: string]: number}
+    storyViewerOptions
+}
+
 export class StoryRenderer {
     sessionID: string
     story: Story
+    visitedNodes: Set<StoryNode>
     constructor (story: Story, title: string) {
         this.story = story
         this.sessionID = title + "-" + Date.now()
+        this.visitedNodes = new Set();
+        this.visitedNodes.add(this.story.currentNode)
     }
     render() {
         this.renderEditorView()
@@ -46,15 +55,16 @@ export class StoryRenderer {
         let currentOptions = this.story.options(current)
         let storyOptionsFrame = document.getElementById("story-options")
         currentOptions.forEach((option, same, set)=>{
-            if (!option.disabled) {
-                let title = this.story.title(option.destination)
-                let optionText = option.text
-                //TODO OPTION IDENTITY
-                storyOptionsFrame.appendChild(this.generateStoryOptionDOMNode(title, optionText))
-                document.getElementById(`story-option-${title}`).addEventListener('mouseup', ()=>{
-                    this.traverseOption(option)
-                })
-            }
+            if (!option.isDisabled(this.visitedNodes)) this.applyStoryOptionToFrame(option, storyOptionsFrame);
+        })
+    }
+    applyStoryOptionToFrame(option: StoryOption, frame: HTMLElement) {
+        let title = this.story.title(option.destination)
+        let optionText = option.text
+        //TODO OPTION IDENTITY
+        frame.appendChild(this.generateStoryOptionDOMNode(option.optionID, optionText))
+        document.getElementById(`story-option-${option.optionID}`).addEventListener('mouseup', ()=>{
+            this.traverseOption(option)
         })
     }
     handleNodeTraversalEffects() {
@@ -62,14 +72,13 @@ export class StoryRenderer {
             //trigger image, music, etc. events
         }
     }
-    generateStoryOptionDOMNode(title, optionText): Node {
+    generateStoryOptionDOMNode(optionID, optionText): Node {
         let wrapper = document.createElement("div")
-        wrapper.innerHTML = this.generateStoryOptionButtonHTML(title, optionText)
+        wrapper.innerHTML = this.generateStoryOptionButtonHTML(optionID, optionText)
         return wrapper.firstChild
     }
-    generateStoryOptionButtonHTML(title, optionText): string {
-        //TODO OPTION IDENTITY switch to better identifier system. using node titles is dangerous when multiple options point to same node.
-        return `<button id="story-option-${title}"> ${optionText} </button>`
+    generateStoryOptionButtonHTML(optionID, optionText): string {
+        return `<button id="story-option-${optionID}"> ${optionText} </button>`
     }
     renderPreview() {
         let iframe = <HTMLIFrameElement>document.getElementById("preview-frame")
@@ -131,51 +140,52 @@ export class StoryRenderer {
     placeChildNode(option: StoryOption): void {
         let viewer = <HTMLDivElement>document.getElementById("children")
         let title = this.story.title(option.destination)
+        let optionId = option.optionID
         let content = option.destination.content
         content = content.slice(0,50) + "..."
-        let childNode = this.createChildNodeDOMNode(title, option.text)
+        let childNode = this.createChildNodeDOMNode(title, option)
         viewer.appendChild(childNode)
-        //TODO OPTION IDENTITY
-        document.getElementById(`child-${title}-content-preview`).innerText = content
-        this.setupChildOptionForm(option, `child-${title}-option-text`)
-        listen(`child-${title}-traversal`, `click`, ()=>{ this.traverseOption(option) })
-        listen(`remove-child-${title}`, `mouseup`, ()=>{ this.removeChild(title, option) })
+        document.getElementById(`child-${optionId}-content-preview`).innerText = content
+        this.setupChildOptionForm(option, `child-${optionId}-option-text`)
+        listen(`child-${optionId}-traversal`, `click`, ()=>{ this.traverseOption(option) })
+        listen(`remove-child-${optionId}`, `mouseup`, ()=>{ this.removeChild(option) })
     }
-    setupChildOptionForm(option, id) {
-        let childOptionForm = new Form(id)
-        childOptionForm.addInput("text", id)
-        childOptionForm.submitInput = id
+    setupChildOptionForm(option: StoryOption, elementId: string) {
+        let childOptionForm = new Form(elementId)
+        childOptionForm.addInput("text", elementId)
+        childOptionForm.submitInput = elementId
         childOptionForm.onSubmit = () => { 
             this.changeOptionText(option, childOptionForm) 
             this.render()
         }
     }
-    changeOptionText(option, childOptionForm) {
+    changeOptionText(option: StoryOption, childOptionForm: Form) {
         let { text } = childOptionForm.read()
         option.text = text;
     }
-    createChildNodeDOMNode(title, optionText): Node {
+    createChildNodeDOMNode(title: string, option: StoryOption): Node {
         let wrapper = document.createElement("div")
-        wrapper.innerHTML = this.generateChildNodeInnerHTML(title, optionText)
+        wrapper.innerHTML = this.generateChildNodeInnerHTML(title, option)
         return wrapper.firstChild
     }
-    generateChildNodeInnerHTML(title: string, optionText: string): string {
-        //TODO OPTION IDENTITY
-        return `<div id="child-${title}-bundle" class="child-bundle">
-                <form action="javascript:void(0);" id="child-${title}-option-form" class="option-form">
-                <label for="child-${title}-option-text">Story option:</label>
-                <input type="text" id="child-${title}-option-text" value="${optionText}">
+    generateChildNodeInnerHTML(title: string, option: StoryOption): string {
+        let text = option.text;
+        let id = option.optionID;
+        return `<div id="child-${id}-bundle" class="child-bundle">
+                <form action="javascript:void(0);" id="child-${id}-option-form" class="option-form">
+                <label for="child-${id}-option-text">Story option:</label>
+                <input type="text" id="child-${id}-option-text" value="${text}">
             </form>
-            <button id="child-${title}-traversal" class="story-node child-node">
-                <h2 id="child-${title}-title">${title}</h2>
-                <p id="child-${title}-content-preview"></p>
+            <button id="child-${id}-traversal" class="story-node child-node">
+                <h2 id="child-${id}-title">${title}</h2>
+                <p id="child-${id}-content-preview"></p>
             </button>
-            <button id="remove-child-${title}" class="remove-child">—</button>
+            <button id="remove-child-${id}" class="remove-child">—</button>
         </div>`
     }
-    removeChild(title, option) {
+    removeChild(option: StoryOption) {
         this.story.removeOption(this.story.currentNode, option)
-        document.getElementById(`child-${title}-bundle`).remove();
+        document.getElementById(`child-${option.optionID}-bundle`).remove();
         this.updateStoryNodeLists()
     }
 
@@ -293,10 +303,11 @@ export class StoryRenderer {
     }
     traverseOption(option) {
         this.story.traverse(option)
+        this.visitedNodes.add(this.story.currentNode)
         this.render()
     }
     traverseTo(node: StoryNode) {
-        this.story.current = node
+        this.story.setCurrent(node)
         this.render()
     }
 }
