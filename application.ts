@@ -19,50 +19,71 @@ import {
 import { DynamicElement } from "./scripts/dynamicElement.js"
 import { Story } from "./scripts/story.js"
 
-//TODO for changing node titles, use recursive backpropogation 
-//algorithm double link list graph aliasing over the ancestral nodes set
+//Set story to edit.
+const storyFileName: string | undefined = "labyrinth"
+const storyTitle: string | undefined = "labyrinth"
+const existingRootNode: string | undefined = "intro"
 
-/*TEMP eventually add a setup form to initialize a new story, but current purpose is to edit labyrinth.*/
-//let labyrinth = readStoryData("labyrinth")
-//labyrinth.current = labyrinth.node("intro")
-//let renderer = new StoryRenderer(labyrinth, "labyrinth")
-let renderer = new StoryRenderer(new Story(), "sample_data")
+//Prepare story instance.
+let currentStory;
+if (storyFileName) { 
+    currentStory = readStoryData(storyFileName);
+} else {
+    currentStory = new Story();
+}
 
-let playerView = new DynamicElement("player-view")
-let editorView = new DynamicElement("editor-view")
-let savePopup = new DynamicElement("save-popup")
-let popupOverlay = new DynamicElement("popup-overlay")
-let nodeIndex = new DynamicElement("node-index")
+//Set story root node if not default.
+if (existingRootNode != undefined && existingRootNode != "root") { 
+    currentStory.current = currentStory.node(existingRootNode) 
+}
 
+//Prepare story renderer. All applications now reference Story instance through this renderer,
+//Renderer generally handles all actions which involve modifying story data and presenting it to the user.
+//The purpose of the global application state set up below is then to listen for user input and run renderer
+//  actions based on that user input.
+let renderer = new StoryRenderer(currentStory, storyTitle);
+
+//Dynamic elements for referencing show/hide functionality of popup windows and tabs.
+const playerView = new DynamicElement("player-view")
+const editorView = new DynamicElement("editor-view")
+const savePopup = new DynamicElement("save-popup")
+const popupOverlay = new DynamicElement("popup-overlay")
+const nodeIndex = new DynamicElement("node-index")
+
+//Tab view state toggle for editor / player view.
 let tabViewIsEditor = true;
 
-useEnterToSubmit();
-renderer.render();
-renderer.renderPreview();
-
+//Set interval for autosaving.
+const saveInterval = 10; //Minutes
 window.setInterval(()=>{
     saveState(renderer, savePopup)
-}, toMiliseconds(0,0,10))
+}, toMiliseconds(0,0,saveInterval))
 
+//Create listener for tab switching.
 window.addEventListener('keydown', (e)=>{
     if (e.key == "Tab" && e.getModifierState("Control") == true) {
         tabViewIsEditor = switchTabView(tabViewIsEditor, playerView, editorView)
     }
 })
 
-newChildForm.onSubmit        = () => { addChild(renderer, newChildForm) }
-currentEditorForm.onSubmit   = () => { renderer.setCurrentData(currentEditorForm); renderer.render(); }
-currentSelectForm.onSubmit   = () => { shiftCurrent(renderer, currentSelectForm) }
+//Set window listener causing form elements to submit on "Enter" keydown.
+useEnterToSubmit();
 
+//Start application.
+renderer.render();
+
+//Setup form submission actions.
+newChildForm.onSubmit        = () => { addChild(renderer, newChildForm) }
+currentEditorForm.onSubmit   = () => { renderer.setCurrentData( currentEditorForm.read().content ); renderer.render(); }
+currentSelectForm.onSubmit   = () => { shiftCurrent(renderer, currentSelectForm) }
 removeCurrentForm.onSubmit = () => { removeCurrent(renderer, removeCurrentForm); popupOverlay.hide();}
 removeCurrentForm.onClose   = () => { removeCurrentForm.hide(); popupOverlay.hide(); }
-listen("remove-current", "mouseup",      () => { removeCurrentForm.show(); popupOverlay.show(); })
 
+//Setup UI button listeners.
+listen("remove-current", "mouseup",      () => { removeCurrentForm.show(); popupOverlay.show(); })
 listen("add-child", "mouseup",             () => { newChildForm.show() })
 listen("save", "mouseup",                   () => { saveState(renderer, savePopup) })
-
 listen("editor-view-selector", "mouseup", ()=>{ tabViewIsEditor = switchTabView(tabViewIsEditor, playerView, editorView) })
 listen("player-view-selector", "mouseup", ()=>{ tabViewIsEditor = switchTabView(tabViewIsEditor, playerView, editorView) })
-
-listen("view-node-index", "mouseup", ()=>{ nodeIndex.show(); popupOverlay.show() })
-listen("node-index-close", "mouseup", ()=>{ nodeIndex.hide(); popupOverlay.hide() })
+listen("view-node-index", "mouseup",     ()=>{ nodeIndex.show(); popupOverlay.show() })
+listen("node-index-close", "mouseup",     ()=>{ nodeIndex.hide(); popupOverlay.hide() })

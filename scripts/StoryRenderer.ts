@@ -83,8 +83,7 @@ export class StoryRenderer {
             </body>
         </html>`
     }
-    setCurrentData(currentEditorForm) {
-        let { content } = currentEditorForm.read()
+    setCurrentData(content) {
         this.story.currentNode.content = content
     }
     setContentViewer() {
@@ -116,8 +115,7 @@ export class StoryRenderer {
      * Using the user-provided data in the newChild form, adds an option to the currently selected node. 
      * If the destination node specified does not exist in the current story, makes a new empty node with the provided title.
      */
-    linkNewChild(renderer, newChildForm) {
-        let { optionText, destinationTitle } = newChildForm.read()
+    linkNewChild(renderer, {optionText, destinationTitle}) {
         let destinationNode;
         if (this.story.has(destinationTitle)) {
             destinationNode = this.story.node(destinationTitle)

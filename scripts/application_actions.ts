@@ -4,9 +4,10 @@ import { writeStoryData } from "./StoryIO.js"
 import { StoryRenderer } from "./StoryRenderer.js"
 let fs = require("fs")
 
+
 /**
- * Makes the enter key blur the focused element. 
- * Causes inputs and textareas to fire "change" events when entered on.
+ * Makes the enter key blur the focused element,
+ * causing inputs and textareas to fire "change" events when entered on.
  * Shift + Enter bypasses the blur in order to allow the entry of newlines.
 */
 export function useEnterToSubmit() {
@@ -23,7 +24,7 @@ export function useEnterToSubmit() {
 
 export function addChild(renderer, newChildForm) {
     newChildForm.hide(); 
-    renderer.linkNewChild(renderer, newChildForm); 
+    renderer.linkNewChild(renderer, newChildForm.read()); 
     newChildForm.clearInputs();
 }
 

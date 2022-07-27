@@ -81,6 +81,17 @@ export class Story {
     options(node: StoryNode): Set<StoryOption> {
         return this.edgeMap.get(node);
     }
+    /**
+     * Add the given StoryNode to this story. 
+     * @param title a name to be used to reference the node later.
+     * @param node the StoryNode to add. 
+     * @param options a set of StoryOptions to attach to the Node.
+     * @example 
+     *  let story = new Story()
+     *  story.addNode("node1", new StoryNode())
+     * //A new, empty node is placed in the story.
+     *  story.addNode("node1", new StoryNode("some content"))
+    */
     addNode(title: string, node: StoryNode, options?: Set<StoryOption>): StoryNode {
         if (!this.has(title)) {
             this.nodes.set(title, node)
