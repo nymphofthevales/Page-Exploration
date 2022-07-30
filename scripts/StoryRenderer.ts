@@ -4,7 +4,13 @@ import { StoryOption } from "./StoryOption.js"
 import { readStoryData } from "./StoryIO.js"
 import { Form } from "./form.js"; 
 import { forEachInClass, listen } from "./dom_helpers.js";
+import { DynamicElement } from "./dynamicElement.js";
 
+//TEMP class declaration for temporary typing purposes, 
+//needs to be moved to its own file and made functional.
+export interface PlayerScoresList {
+    [scoreName: string]: number
+}
 export class ReaderState {
     visitedNodes: Set<StoryNode>
     scores: {[name: string]: number}
@@ -140,15 +146,15 @@ export class StoryRenderer {
     placeChildNode(option: StoryOption): void {
         let viewer = <HTMLDivElement>document.getElementById("children")
         let title = this.story.title(option.destination)
-        let optionId = option.optionID
+        let optionID = option.optionID
         let content = option.destination.content
         content = content.slice(0,50) + "..."
         let childNode = this.createChildNodeDOMNode(title, option)
         viewer.appendChild(childNode)
-        document.getElementById(`child-${optionId}-content-preview`).innerText = content
-        this.setupChildOptionForm(option, `child-${optionId}-option-text`)
-        listen(`child-${optionId}-traversal`, `click`, ()=>{ this.traverseOption(option) })
-        listen(`remove-child-${optionId}`, `mouseup`, ()=>{ this.removeChild(option) })
+        document.getElementById(`child-${optionID}-content-preview`).innerText = content
+        this.setupChildOptionForm(option, `child-${optionID}-option-text`)
+        listen(`child-${optionID}-traversal`, `click`, ()=>{ this.traverseOption(option) })
+        listen(`remove-child-${optionID}`, `mouseup`, ()=>{ this.removeChild(option) })
     }
     setupChildOptionForm(option: StoryOption, elementId: string) {
         let childOptionForm = new Form(elementId)
@@ -279,15 +285,56 @@ export class StoryRenderer {
         let previewText = this.story.node(title).content.slice(0,previewLength)
         return previewText
     }
-
     fillConditionalOptionsMenu() {
         let current = this.story.currentNode
         let currentOptions = this.story.options(current)
         let optionsMenu = document.getElementById("conditional-options-selection")
         optionsMenu.innerHTML = "";
-        currentOptions.forEach((option, same, set)=>{
+        currentOptions.forEach((option) => {
+            console.log(option.text)
             let conditionalOption = this.createConditionalOptionDOMNode(option)
             optionsMenu.appendChild(conditionalOption)
+
+            /*listen(this.conditionalOptionFormElementID(option, `check`), "change", ()=>{
+                let showHideForm = new DynamicElement(this.conditionalOptionFormElementID(option, `form-show-hide`))
+                showHideForm.toggleVisibility()
+            })
+
+            listen(this.conditionalOptionFormElementID(option, `check-showif`), "change", ()=>{
+                let showHideForm = new DynamicElement(this.conditionalOptionFormElementID(option, `form-show-hide`))
+                showHideForm.toggleVisibility()
+            })
+            listen(this.conditionalOptionFormElementID(option, `check-showif-visited`), "change", ()=>{
+                let showHideForm = new DynamicElement(this.conditionalOptionFormElementID(option, `form-show-hide`))
+                showHideForm.toggleVisibility()
+            })
+            listen(this.conditionalOptionFormElementID(option, `check-showif-scored`), "change", ()=>{
+                let showHideForm = new DynamicElement(this.conditionalOptionFormElementID(option, `form-show-hide`))
+                showHideForm.toggleVisibility()
+            })
+            listen(this.conditionalOptionFormElementID(option, `showif-visited-addrule`), "click", ()=>{
+
+            })
+            listen(this.conditionalOptionFormElementID(option, `showif-scored-addrule`), "click", ()=>{
+
+            })
+
+
+            listen(this.conditionalOptionFormElementID(option, `check-hideif`), "change", ()=>{
+
+            })
+            listen(this.conditionalOptionFormElementID(option, `check-hideif-visited`), "change", ()=>{
+
+            })
+            listen(this.conditionalOptionFormElementID(option, `check-hideif-scored`), "change", ()=>{
+
+            })
+            listen(this.conditionalOptionFormElementID(option, `hideif-visited-addrule`), "click", ()=>{
+
+            })
+            listen(this.conditionalOptionFormElementID(option, `hideif-scored-addrule`), "click", ()=>{
+
+            })*/
         })
     }
     createConditionalOptionDOMNode(option): Node {
@@ -295,15 +342,216 @@ export class StoryRenderer {
         wrapper.innerHTML = this.generateConditionalOptionHTML(option)
         return wrapper.firstChild
     }
-    generateConditionalOptionHTML(option): string {
-        //TODO OPTION IDENTITY
+    conditionalOptionFormElementID(option: StoryOption, elementID: string): string {
+        return `conditional-option-` + option.optionID + '-' + elementID
+    }
+    extractOptionIDFromIDString(id: string): string {
+        return id.split("-")[2]
+    }
+    /**
+     * Contains:
+     * 
+    */
+    generateConditionalOptionHTML(option: StoryOption): string {
+        let baseID = `conditional-option-` + option.optionID
         let destinationTitle = this.story.title(option.destination)
         let optionText = option.text.length < 25 ? option.text : option.text.slice(0,25);
-        return `<label><input type="checkbox" id="conditional-options-${destinationTitle}"> "${optionText}" => <i>${destinationTitle}</i></label>`
+        return this.wrapperDiv( baseID + `-form` + `-content-container`, false, 
+            this.showHideForm(baseID, 
+                this.isConditionalCheckbox(baseID, optionText, destinationTitle) + 
+                this.wrapperDiv( baseID + `-showHideForm` + `-content-container`, false,
+                    this.showIfForm(baseID, 
+                        this.showIfCheckbox(baseID) + 
+                        this.wrapperDiv( baseID + `-show-visitedScoredForm` + `-content-container`, false,
+                            this.showIfVisitedRulesForm(baseID, 
+                                this.showIfVisitedCheckbox(baseID) + 
+                                this.wrapperDiv( baseID + `-show-visited-rulesForm` + `-content-container`, false,
+                                    this.rulesFormContent(baseID, "show", "visited")
+                                )
+                            ) + 
+                            this.showIfScoredRulesForm(baseID, 
+                                this.showIfScoredCheckbox(baseID) + 
+                                this.wrapperDiv( baseID + `-show-scored-rulesForm` + `-content-container`, true,
+                                    this.rulesFormContent(baseID, "show", "scored")
+                                )
+                            )
+                        )
+                    ) + 
+                    this.hideIfForm(baseID, 
+                        this.hideIfCheckbox(baseID) + 
+                        this.wrapperDiv( baseID + `-hide-visitedScoredForm` + `-content-container`, true,
+                            this.hideIfVisitedRulesForm(baseID, 
+                                this.hideIfVisitedCheckbox(baseID) + 
+                                this.wrapperDiv( baseID + `-hide-visited-rulesForm` + `-content-container`, true,
+                                    this.rulesFormContent(baseID, "hide", "visited")
+                                )
+                            ) +  
+                            this.hideIfScoredRulesForm(baseID, 
+                                this.hideIfScoredCheckbox(baseID) +
+                                this.wrapperDiv( baseID + `-hide-scored-rulesForm` + `-content-container`, true,
+                                    this.rulesFormContent(baseID, "hide", "scored")
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    }
+    wrapperDiv(id, hidden, form) {
+        let classList = hidden? `hidden` : ``
+        return `<div id="${id}" class="${classList}">` + form + `</div>`
+    }
+    isConditionalCheckbox(baseID, optionText, destinationTitle) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check"> "${optionText}" => <i>${destinationTitle}</i>
+        </legend>
+        `
+    }
+    showIfCheckbox(baseID) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check-showif">Show if...</input>
+        </legend>
+        `
+    }
+    hideIfCheckbox(baseID) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check-hideif">Hide if...</input>
+        </legend>
+        `
+    }
+    showIfVisitedCheckbox(baseID) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check-showif-visited">Visited nodes</input>
+        </legend>
+        `
+    }
+    showIfScoredCheckbox(baseID) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check-showif-scored">Scored</input>
+        </legend>
+        `
+    }
+    hideIfVisitedCheckbox(baseID) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check-hideif-visited">Visited nodes</input>
+        </legend>
+        `
+    }
+    hideIfScoredCheckbox(baseID) {
+        return `
+        <legend>
+            <input type="checkbox" id="${baseID}-check-hideif-scored">Scored</input>
+        </legend>
+        `
+    }
+    /**
+     * fieldset with ID "-form-show-hide"
+    */
+    showHideForm(baseID, content) {
+        return `
+        <fieldset id="${baseID}-form-show-hide" class="conditional-form">` +
+        content + 
+        `</fieldset>`
+    }
+    /**
+     * fieldset with ID "-showif-visited-scored"
+    */
+    showIfForm(baseID, content) {
+        return `
+        <fieldset id="${baseID}-showif-visited-scored" class="conditional-form">` + 
+        content + 
+        `</fieldset>`
+    }
+    /**
+     * fieldset with ID "-hideif-visited-scored"
+    */
+    hideIfForm(baseID, content) {
+        return `
+        <fieldset id="${baseID}-form-hideif-visited-scored" class="conditional-form">` + 
+        content + 
+        `</fieldset>`
+    }
+    /**
+     * fieldset with ID "-showif-visited-rules"
+    */
+    showIfVisitedRulesForm(baseID, content) {
+        return `
+        <fieldset id="${baseID}-showif-visited-rules" class="conditional-form">` + 
+        content + 
+        `</fieldset>`
+    }
+    /**
+     * fieldset with ID "-showif-scored-rules"
+    */
+    showIfScoredRulesForm(baseID, content) {
+        return `
+        <fieldset id="${baseID}-showif-scored-rules" class="conditional-form">` + 
+        content + 
+        `</fieldset>`
+    }
+    /**
+     * fieldset with ID "-hideif-visited-rules"
+    */
+    hideIfVisitedRulesForm(baseID, content) {
+        return `<fieldset id="${baseID}-hideif-visited-rules" class="conditional-form">` + 
+        content + 
+        `</fieldset>`
+    }
+    /**
+     * fieldset with ID "-hideif-scored-rules"
+    */
+    hideIfScoredRulesForm(baseID, content) {
+        return `<fieldset id="${baseID}-hideif-scored-rules" class="conditional-form">` + 
+        content + 
+        `</fieldset>`
+    }
+    rulesFormContent(baseID, visibilityType, ruleType) {
+        let buttonText;
+        switch(ruleType) {
+            case "visited": buttonText = "ADD NODE VISITATION RULE"
+                break;
+            case "scored": buttonText = "ADD SCORING RULE"
+        }
+        return `
+        <p>Reader must have:<p>
+        <div id="${baseID}-${visibilityType}if-${ruleType}-rules-container"></div>
+        <button id="${baseID}-${visibilityType}if-${ruleType}-addrule" class="uibutton">${buttonText}</button>
+        `
+    }
+    generateConditionalOptionScoredRuleFormHTML(option) {
+        //VERY TEMP
+        `<form id="conditional-option-${option.optionID}-visited-rule-${Date.now()}">`
+    }
+    generateConditionalOptionVisitedRuleFormHTML(option: StoryOption) {
+        return `
+            <select>
+                <option value="true" selected>Has</option>
+                <option value="false">Doesn't have</option>
+            </select>
+            <input type="text">
+        `
+    }
+    generateConditionalOptionVisitedRuleAdditionalNode() {
+        return `
+        <select>
+            <option value="or" selected>or</option> 
+            <option value="and">and</option>
+        </select>
+        <input type="text" id="">
+        `
     }
     traverseOption(option) {
         this.story.traverse(option)
+        //TODO EVENT trigger traverse option
         this.visitedNodes.add(this.story.currentNode)
+        //TODO EVENT trigger visited current
         this.render()
     }
     traverseTo(node: StoryNode) {

@@ -7,8 +7,18 @@ export class DynamicElement {
             this.reference = element
         }
     }
+    toggleVisibility() {
+        if (this.reference.classList.contains("hidden")) {
+            this.show()
+        } else {
+            this.hide()
+        }
+    }
     hide() {
         this.reference.classList.add('hidden')
+    }
+    show() {
+        this.reference.classList.remove("hidden")
     }
     fadeOut(ms: number) {
         setTimeout(()=>{
@@ -23,11 +33,6 @@ export class DynamicElement {
             this.reference.style.animation = ``
         }, ms)
         this.reference.style.animation = `dynamicElementFadeIn ${ms/1000}s`
-    }
-    show() {
-        console.log(this.reference.classList)
-        this.reference.classList.remove("hidden")
-        console.log(this.reference.classList)
     }
     clear() {
         this.reference.innerHTML = ""

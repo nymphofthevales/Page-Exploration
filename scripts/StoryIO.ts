@@ -55,7 +55,7 @@ function createOptionFromRead(story: Story, optionData: StoryOptionData): StoryO
 
 export function writeStoryData(story: Story, sessionID: string) {
     let save = {}
-    let backup = "./data/" + sessionID + ".json"
+    let backup = "./data/" + "auto" + sessionID + ".json"
     let filename = "./data/" + sessionID.split('-')[0] + ".json"
     story.forEachNode((node: StoryNode, title: string) => {
         save[title] = {

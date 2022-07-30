@@ -1,4 +1,5 @@
 import { StoryNode, Story } from "./Story.js"
+import { PlayerScoresList } from "./StoryRenderer.js"
 
 export class StoryOption {
     isDefaultDisabled: boolean = false
@@ -37,7 +38,7 @@ export class StoryOption {
                 }) 
             }
         }
-        this.optionID = "OPT-" + (Math.floor(Math.random() * 10) + Date.now())
+        this.optionID = "OPT" + (Math.floor(Math.random() * 100) + Date.now())
     }
     setDisabled(value: boolean) {
         this.isDefaultDisabled = true;
@@ -63,12 +64,12 @@ export class StoryOption {
             let c = this.conditions;
             if (c.isScoreThresholdDependant) {
                 if (c.isVisitedNodesDependant) {
-                    return this.fulfillsNodeDependencies(visitedNodes) && this.fulfillsScoreThresholds(visitedNodes);
+                    return !this.fulfillsNodeDependencies(visitedNodes) || !this.fulfillsScoreThresholds(visitedNodes);
                 } else {
-                    return this.fulfillsScoreThresholds(visitedNodes);
+                    return !this.fulfillsScoreThresholds(visitedNodes);
                 }
             } else if (c.isVisitedNodesDependant) {
-                return this.fulfillsNodeDependencies(visitedNodes);
+                return !this.fulfillsNodeDependencies(visitedNodes);
             } else {
                 return false;
             }
@@ -101,9 +102,12 @@ export type ScoreDependencyData = {
     values: Array<number>
     connectives: Array<"and" | "or">
 }
-interface PlayerScoresList {
-    [scoreName: string]: number
+export type NodeDependencyData = {
+    read: boolean,
+    nodes: Array<string>,
+    connectives: Array<"and" | "or">
 }
+
 export class ScoreDependencyRule {
     isFulfilled: (playerScores: PlayerScoresList) => boolean
     dependencyData: ScoreDependencyData
@@ -142,12 +146,6 @@ export class ScoreDependencyRule {
     }
 }
 
-
-export type NodeDependencyData = {
-    has: boolean,
-    nodes: Array<string>,
-    connectives: Array<"and" | "or">
-}
 export class NodeDependencyRule {
     isFulfilled: (visitedNodes: Set<string>) => boolean
     dependencyData: NodeDependencyData
@@ -168,7 +166,7 @@ export class NodeDependencyRule {
             let connective = dependencyData.connectives[i]
             fulfillmentChecker = this.logicalConnect(last, connective, next)
         }
-        return (visited) => { return dependencyData.has && fulfillmentChecker(visited) }
+        return (visited) => { return dependencyData.read && fulfillmentChecker(visited) }
     }
     /**
      * Creates a function representing the joining of two boolean-returning functions with a logical connective.

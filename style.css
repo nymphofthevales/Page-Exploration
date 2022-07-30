@@ -117,7 +117,7 @@ datalist {
     left: 0;
     height: 100vh;
     width: 100vw;
-    opacity: 0.7;
+    opacity: 0.8;
     background-color: black;
     z-index: 9;
 }
@@ -198,9 +198,37 @@ datalist {
     color: black
 }
 
+#conditional-options-frame {
+    margin-right: 100px;
+    min-width: 400px;
+    position: relative;
+}
+conditional-options-header {
+    height: 20%;
+}
+#conditional-options-selection {
+    overflow: scroll;
+    height: 80%;
+    width: 90%;
+    position: absolute;
+    bottom: 0;
+}
+#conditional-options-selection fieldset {
+    margin-bottom: 20px;
+}
+
 #conditional-options-selection label {
     display: block;
     margin-top: 20px;
+}
+
+#conditional-options-selection fieldset {
+    border-right: none;
+    border-bottom: none;
+}
+#conditional-options-selection legend {
+    padding: 3px;
+    border: 1px solid white;
 }
 
 .child-node {
@@ -301,6 +329,7 @@ a:active {
     left: 50%;
     transform: translate(-50%, -50%);
     width: auto;
+    min-width: 30vw;
     height: 80vh;
     z-index: 10;
     padding: 100px 50px;;

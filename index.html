@@ -32,7 +32,8 @@
                 <button id="save" class="uibutton">Save All Changes</button>
                 <form action="javascript:void(0);" id="remove-current-form" class="hidden">
                     <h2>Remove Current Node</h2>
-                    <p>Note: Removing the current node will remove all options leading to and from it.</p>
+                    <p>Removes current node from the story and deletes any options leading to it.</p>
+                    <p>Warning: you will permanently lose access to any data stored in this node..</p>
                     <p>This action cannot be undone.</p>
                     <button id="remove-current-confirm" class="uibutton">Remove</button>
                     <button id="remove-current-cancel" class="uibutton">Cancel</button>
@@ -69,11 +70,11 @@
                 <div id="current-node-content-preview">
                     <iframe frameborder="0" id="preview-frame"></iframe>
                 </div>
-                <form action="javascript:void(0);">
+                <form action="javascript:void(0);" id="conditional-options-frame">
                     <div id="conditional-options-header">
                         <h2 id="conditional-title">Conditional Story Options</h2>
                     </div>
-                    <fieldset id="conditional-options-selection"></fieldset>
+                    <div id="conditional-options-selection"></div>
                 </form>
             </div>
     

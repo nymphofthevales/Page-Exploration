@@ -29,9 +29,9 @@ import {
 
 
 //Set story to edit.
-const storyFileName: string | undefined = "labyrinth"
-const storyTitle: string | undefined = "labyrinth"
-const existingRootNode: string | undefined = "intro"
+const storyFileName: string | undefined = "new"
+const storyTitle: string | undefined = "new"
+const existingRootNode: string | undefined = undefined;
 
 //Prepare story instance.
 let currentStory;
