@@ -9,8 +9,8 @@ export class StoryOption {
     isConditional: boolean
     conditions: {
         isVisitedNodesDependant: boolean,
-        isScoreThresholdDependant: boolean
-        nodeDependencies: Set<NodeDependencyRule>
+        isScoreThresholdDependant: boolean,
+        nodeDependencies: Set<NodeDependencyRule>,
         scoreDependencies: Set<ScoreDependencyRule>
     }
     constructor(text: string, destination: StoryNode, 
@@ -40,10 +40,19 @@ export class StoryOption {
         }
         this.optionID = "OPT" + (Math.floor(Math.random() * 100) + Date.now())
     }
+    addNodeDependencyRule() {
+
+    }
+    addScoreDependencyRule() {
+
+    }
+    clearDependencyRules() {
+        
+    }
     setDisabled(value: boolean) {
         this.isDefaultDisabled = true;
     }
-    isDisabled(visitedNodes: Set<StoryNode>): boolean {
+    isDisabled(visitedNodes: Set<string>): boolean {
         if (this.isDefaultDisabled) {
             return true;
         } else {
@@ -59,7 +68,7 @@ export class StoryOption {
      * 2. May be dependant on the presence of certain StoryNodes in the player's visitedNodes history.
      * 3. May be dependant on the values of certain scores incremented by writer-set StoryNode Effects.
     */
-    computeDisabledValue(visitedNodes: Set<StoryNode>): boolean {
+    computeDisabledValue(visitedNodes: Set<string>): boolean {
         if (this.isConditional) {
             let c = this.conditions;
             if (c.isScoreThresholdDependant) {
@@ -77,22 +86,31 @@ export class StoryOption {
             return false;
         }
     }
-    fulfillsNodeDependencies(visitedNodes: Set<StoryNode>): boolean {
+    fulfillsNodeDependencies(visitedNodes: Set<string>): boolean {
         return this.isFulfilled("nodeDependencies", visitedNodes)
     }
-    fulfillsScoreThresholds(visitedNodes: Set<StoryNode>): boolean {
+    fulfillsScoreThresholds(visitedNodes: Set<string>): boolean {
         return this.isFulfilled("scoreDependencies", visitedNodes)
     }
     /**
      * Iterates over the set of dependency rules of the given type for this node.
      * @returns a boolean value representing the universal quantification of all rules of the given type.
     */
-    isFulfilled(dependencyType: string, visitedNodes: Set<StoryNode>): boolean {
+    isFulfilled(dependencyType: string, visitedNodes: Set<string>): boolean {
         let fulfilled = true;
-        fulfilled = this.conditions[dependencyType].forEach((dependencyRule) => {
-            return fulfilled && dependencyRule.isFulfilled(visitedNodes);
+        let data;
+        if (dependencyType == "scoreDependencies") {
+            data = this.generateScoresList(visitedNodes)
+        } else {
+            data = visitedNodes
+        }
+        fulfilled = this.conditions[dependencyType].forEach((dependencyRule: NodeDependencyRule | ScoreDependencyRule) => {
+            return fulfilled && dependencyRule.isFulfilled(data);
         })
         return fulfilled
+    }
+    generateScoresList(visitedNodes) {
+        //TODO
     }
 }
 

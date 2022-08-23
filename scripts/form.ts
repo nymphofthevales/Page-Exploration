@@ -13,9 +13,16 @@ export class Form extends DynamicElement {
     values: FormReadout = {}
     _submit: HTMLElement
     _close: HTMLElement
-    constructor(id: string) {
-        super(document.getElementById(id))
-        this._housing = document.getElementById(id)
+    constructor(target: string | HTMLElement) {
+        super(target)
+        if (typeof target == "string") {
+            this._housing = document.getElementById(target)
+        } else {
+            this._housing = target
+        }
+    }
+    get(inputName) {
+        return this.inputs[inputName]
     }
     addInput(name:string, id: string): void {
         this.inputs[name] = <HTMLInputElement>document.getElementById(id)

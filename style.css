@@ -190,10 +190,10 @@ datalist {
 .story-node > * {
     text-align: left;
 }
-.story-node:hover, #add-child:hover, .remove-child:hover {
+.story-node:hover, #add-child:hover, .remove-child:hover, .action-button:hover {
     background-color: #770033;
 }
-.story-node:active, #add-child:active, .remove-child:active {
+.story-node:active, #add-child:active, .remove-child:active, .action-button:active {
     background-color: #ff8899;
     color: black
 }
@@ -201,20 +201,25 @@ datalist {
 #conditional-options-frame {
     margin-right: 100px;
     min-width: 400px;
+    width: auto;
     position: relative;
 }
 conditional-options-header {
     height: 20%;
 }
 #conditional-options-selection {
-    overflow: scroll;
+    overflow-y: scroll;
     height: 80%;
-    width: 90%;
+    width: 100%;
     position: absolute;
     bottom: 0;
 }
-#conditional-options-selection fieldset {
+#conditional-options-selection > div {
     margin-bottom: 20px;
+    width: 90%;
+}
+#conditional-options-selection > div fieldset {
+    width: 100%;
 }
 
 #conditional-options-selection label {
@@ -229,6 +234,23 @@ conditional-options-header {
 #conditional-options-selection legend {
     padding: 3px;
     border: 1px solid white;
+}
+
+.conditional-option-rule-form {
+    width: max-content;
+    border: none;
+    margin-top: 10px;
+}
+.conditional-option-rule-form > * {
+    display: inline;
+}
+.action-button {
+    height: 20px;
+    width: 30px;
+    border-radius: 10px;
+    display: inline;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .child-node {
@@ -265,7 +287,7 @@ conditional-options-header {
     font-weight: bold;
 }
 
-#add-child, .remove-child {
+#add-child, .remove-child, .action-button {
     border: none;
     background-color: transparent;
 }

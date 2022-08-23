@@ -1,9 +1,26 @@
 
+import { Story } from "./Story.js"
 import { DynamicElement } from "./dynamicElement.js"
-import { writeStoryData } from "./StoryIO.js"
+import { writeStoryData, readStoryData } from "./StoryIO.js"
 import { StoryRenderer } from "./StoryRenderer.js"
 let fs = require("fs")
 
+
+/**
+ * Creates a story from file if the given filename exists, else creates a new story.
+*/
+export function prepareStoryInstance(storyFileName, existingRootNode) {
+    let story;
+    if (storyFileName) { 
+        story = readStoryData(storyFileName);
+    } else {
+        story = new Story();
+    }
+    if (existingRootNode != undefined && existingRootNode != "root") { 
+        story.current = story.node(existingRootNode) 
+    }
+    return story;
+}
 
 /**
  * Makes the enter key blur the focused element,

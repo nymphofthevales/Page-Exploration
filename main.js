@@ -2,6 +2,9 @@ const {app, BrowserWindow} = require('electron');
 const path = require("path")
 
 let app_window;
+let mainFile = 
+    //'simple-renderer.html'
+    'full-editor.html'
 
 function createWindow() {
     app_window = new BrowserWindow({
@@ -21,7 +24,7 @@ function createWindow() {
             contextIsolation: false
         }
     })    
-    app_window.loadFile('index.html')
+    app_window.loadFile(mainFile)
     app_window.once('ready-to-show', () => {
         app_window.show()
     })

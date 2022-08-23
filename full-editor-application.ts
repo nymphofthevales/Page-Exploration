@@ -50,7 +50,7 @@ if (existingRootNode != undefined && existingRootNode != "root") {
 //Renderer passes requests to modify story data to its bound Story instance and handles presenting that data it to the user.
 //The purpose of the global application state set up below is then to listen for user input and call renderer
 //  actions based on that user input.
-let renderer = new StoryRenderer(currentStory, storyTitle);
+let renderer = new StoryRenderer(currentStory, storyTitle, true);
 
 //Dynamic elements for referencing show/hide functionality of popup windows and tabs.
 const playerView = new DynamicElement("player-view")

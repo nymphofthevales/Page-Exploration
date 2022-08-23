@@ -3,4 +3,6 @@ node_modules/
 
 /scripts/*.js
 !storyDataParser.js
+renderer-only-application.js
+full-editor-application.js
 application.js

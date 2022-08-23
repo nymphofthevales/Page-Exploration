@@ -7,11 +7,13 @@
     },
     "files": [
         "./scripts/story.ts",
+        "./scripts/ConditionalOptionForm.ts",
         "./scripts/EventManager.ts",
         "./scripts/form.ts",
         "./scripts/dynamicElement.ts",
         "./scripts/string_helpers.ts",
         "./scripts/dom_helpers.ts",
-        "./application.ts"
+        "./full-editor-application.ts",
+        "./renderer-only-application.ts"
       ]
 }
