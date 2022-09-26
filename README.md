@@ -1,6 +1,7 @@
 # Page-Exploration
 <p>A library for writing, and managing progress through, a branching or nonlinear story. First made as a rebuilt game logic for my game Keeper of the Labyrinth.</p> 
-##Features
+
+## Features
 <ul style="list-style-type: square;">
 <li>Purpose-built visual editor for traversing a nonlinear story.</li>
 <li>Allows the writer to edit story node text and options / links between nodes on the fly.</li>
@@ -9,7 +10,7 @@
 <li>Story Renderer class capable of reading JSON story files can be easily imported to other HTML-based projects and built on top of as a back-end.</li>
 </ul>
 
-##How to use
+## How to use
 To **use the visual editor**,
 1. Use `tsc` to compile the project directory.
 2. Make sure `mainFile` in `main.js` is set to `full-editor.html`.
@@ -26,7 +27,7 @@ To **use the renderer in your own project**,
 4. The `StoryRenderer` will automatically render story content and options into divs with the ids `story-text` and `story-options`. Make sure these exist somewhere in your HTML structure and you're golden!
 5. Let me know what project you're using my little app for, because I'd love to hear all about it!! :)
 
-##Long term project goals & known issues
+## Long term project goals & known issues
 <ul style="list-style-type: square;">
 <li>A menu for setting "conditional story options" only shown to the reader dependent on writer-defined logic. Currently non-functional.</li>
 <li>Reader state tracking and an attached event system for incrementing scores, printing images, and other functionality to be called when a reader traverses particular nodes.</li>
