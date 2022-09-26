@@ -28,7 +28,17 @@ import {
 } from "./scripts/application_actions.js"
 
 
-//Set story to edit.
+/**
+ * Set story to edit. 
+ * TO DEFINE A NEW STORY: 
+ * Simply set your storyTitle however you like, and set storyFileName and existingRootNode to undefined.
+ * Your story will be saved in the "story_data" directory as "storyTitle.JSON".
+ * 
+ * TO EDIT AN EXISTING STORY: 
+ * Set storyFileName and storyTitle as the name of a file in your story_data folder.
+ * They should be the same. DO NOT include the extension in your filename.
+ * ExistingRootNode can be the default "root" or the title of the node you want your reader to start at in your story.
+ */
 const storyFileName: string | undefined = "new"
 const storyTitle: string | undefined = "new"
 const existingRootNode: string | undefined = undefined;

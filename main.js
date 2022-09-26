@@ -2,7 +2,7 @@ const {app, BrowserWindow} = require('electron');
 const path = require("path")
 
 let app_window;
-let mainFile = 
+const mainFile = 
     //'simple-renderer.html'
     'full-editor.html'
 
@@ -17,7 +17,7 @@ function createWindow() {
         show: true,
         resizable: true,
 
-        title: "Branching Story Builder",
+        title: "Branching Story Writer",
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,

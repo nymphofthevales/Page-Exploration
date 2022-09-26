@@ -1,15 +1,34 @@
 # Page-Exploration
-<p>A library for building and managing progress through a branching or nonlinear story. Made as a rebuilt game logic for my game Keeper of the Labyrinth.</p>
-
-<p>Based on a graph of interconnected nodes. Defines classes for a <i>Graph</i>, <i>Directed Graph</i>, and <i>Graph Node</i>, 
-with properties and methods to define and destroy connections between them, easily index the graph for a given node, insert new nodes, etc.</p>
-<p>Defines a generalized <i>Story Manager</i> which contains the scenes in a story as nodes in the graph, of two types:
-Sequences, and StoryNodes.</p>
+<p>A library for writing, and managing progress through, a branching or nonlinear story. First made as a rebuilt game logic for my game Keeper of the Labyrinth.</p> 
+##Features
 <ul style="list-style-type: square;">
-<li><i>Sequences</i> allow an easy implementation of one-after-another pages of text, 
-each connected to the next (a linear part, normally linked to a Story Node at its terminus).</li>
-<li><i>StoryNodes</i> hold a single page of text with multiple connections (a nonlinear point, leading to multiple other Sequences or StoryNodes).</li>
-  </ul>
+<li>Purpose-built visual editor for traversing a nonlinear story.</li>
+<li>Allows the writer to edit story node text and options / links between nodes on the fly.</li>
+<li>Provides a fully-functional editor mode and a bare-bones reader mode.</li>
+<li>Export and import stories to a portable JSON format,</li>
+<li>Story Renderer class capable of reading JSON story files can be easily imported to other HTML-based projects and built on top of as a back-end.</li>
+</ul>
 
-<p>In future, will read in a .JSON file containing all story data and inject story text and option selections for connected pages into given HTML elements, 
-as <strong>a robust back end for any nonlinear text-based game</strong>.</p>
+##How to use
+To **use the visual editor**,
+1. Use `tsc` to compile the project directory.
+2. Make sure `mainFile` in `main.js` is set to `full-editor.html`.
+3. The editor doesn't have a frontpage yet, so to select which story to edit or to make a new one, enter the filename and so forth into `full-editor-application.ts` as directed in the first block after the import statements.
+4. Calling `npm start` will run the application through `electron-forge`.
+5. You can also serve `full-editor.html` onto your own localhost node.js server if you like. (It has to be on a node server; it won't work to simply open in browser because the application will lack read/write permissions.)
+5. Go write a cool nonlinear story and please let me know if this app worked for you or if you notice any bugs!
+
+To **use the renderer in your own project**,
+1. Copy the `scripts` directory somewhere into your project.
+2. Make sure you have a `story_data` folder in your project's root directory, and your `storyname.json` file is in it.
+3. In a script tag or file linked to your projct HTML document, import `prepareStoryInstance` and `StoryRenderer`.
+4. Use prepareStoryInstance to read your story from disc, and pass that story to a new `StoryRenderer` instance. An example of this can be seen in `renderer-only-application.ts`
+4. The `StoryRenderer` will automatically render story content and options into divs with the ids `story-text` and `story-options`. Make sure these exist somewhere in your HTML structure and you're golden!
+5. Let me know what project you're using my little app for, because I'd love to hear all about it!! :)
+
+##Long term project goals & known issues
+<ul style="list-style-type: square;">
+<li>A menu for setting "conditional story options" only shown to the reader dependent on writer-defined logic. Currently non-functional.</li>
+<li>Reader state tracking and an attached event system for incrementing scores, printing images, and other functionality to be called when a reader traverses particular nodes.</li>
+<li>An autosave system that clears out older autosaves after a while; currently they just stack up in `story_data` endlessly.</li>
+</ul>

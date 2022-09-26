@@ -19,7 +19,7 @@ interface StoryOptionData {
 
 export function readStoryData(filename: string): Story {
     let story = new Story()
-    let storyData = JSON.parse(fs.readFileSync("./data/" + filename + ".json"))
+    let storyData = JSON.parse(fs.readFileSync("./story_data/" + filename + ".json"))
     console.log(storyData)
     let nodes = Object.keys(storyData)
     for (let i=0; i < nodes.length; i++) {
@@ -55,8 +55,8 @@ function createOptionFromRead(story: Story, optionData: StoryOptionData): StoryO
 
 export function writeStoryData(story: Story, sessionID: string) {
     let save = {}
-    let backup = "./data/" + "auto" + sessionID + ".json"
-    let filename = "./data/" + sessionID.split('-')[0] + ".json"
+    let backup = "./story_data/" + "auto" + sessionID + ".json"
+    let filename = "./story_data/" + sessionID.split('-')[0] + ".json"
     story.forEachNode((node: StoryNode, title: string) => {
         save[title] = {
             "content": node.content,
