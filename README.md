@@ -1,5 +1,7 @@
 # Page-Exploration
 <p>A library for writing, and managing progress through, a branching or nonlinear story. First made as a rebuilt game logic for my game Keeper of the Labyrinth.</p> 
+
+![Easily manage multiple options in the editor view.](/images/working.png)
 ##Features
 <ul style="list-style-type: square;">
 <li>Purpose-built visual editor for traversing a nonlinear story.</li>
@@ -9,6 +11,7 @@
 <li>Story Renderer class capable of reading JSON story files can be easily imported to other HTML-based projects and built on top of as a back-end.</li>
 </ul>
 
+![Search and jump to any node in your complex stury structure.](/images/nodelist.png)
 ##How to use
 To **use the visual editor**,
 1. Use `tsc` to compile the project directory.
@@ -18,6 +21,7 @@ To **use the visual editor**,
 5. You can also serve `full-editor.html` onto your own localhost node.js server if you like. (It has to be on a node server; it won't work to simply open in browser because the application will lack read/write permissions.)
 5. Go write a cool nonlinear story and please let me know if this app worked for you or if you notice any bugs!
 
+![A clean reader view shows what the reader will see.](/images/readerview.png)
 To **use the renderer in your own project**,
 1. Copy the `scripts` directory somewhere into your project.
 2. Make sure you have a `story_data` folder in your project's root directory, and your `storyname.json` file is in it.
