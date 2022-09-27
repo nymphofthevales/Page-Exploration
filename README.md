@@ -43,12 +43,13 @@ To **use the renderer in your own project**,
 </ul>
 
 ## Copyright Information
-The contents of this repository are published under a Creative Commons Attribution 4.0 International License. In short:
-  
- You are free to:
-    Share — copy and redistribute the material in any medium or format.
-    Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+<p>The contents of this repository are published under a Creative Commons Attribution 4.0 International License. In short:
+<br><br>
+ You are free to:<br>
+    Share — copy and redistribute the material in any medium or format.<br>
+    Adapt — remix, transform, and build upon the material for any purpose, even commercially.<br><br>
 
-Under the following terms:
-  Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-  No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+Under the following terms:<br>
+  Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.<br>
+  No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.<br>
+  </p>
