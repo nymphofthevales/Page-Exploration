@@ -34,10 +34,21 @@ To **use the renderer in your own project**,
 4. The `StoryRenderer` will automatically render story content and options into divs with the ids `story-text` and `story-options`. Make sure these exist somewhere in your HTML structure and you're golden!
 5. Let me know what project you're using my little app for, because I'd love to hear all about it!! :) Also, please credit me if you publish / distribute your work in any way (it's just good etiquette).
 
-## Long term project goals
+## Long Term Project Goals
 <ul style="list-style-type: square;">
   <li>A frontpage for the application with a menu for loading in stories and selecting editor/reader mode and dark/light mode settings (would allow it to be packaged into an executable, making it easier to run and use).</li>
   <li>A menu for setting "conditional story options" only shown to the reader dependent on writer-defined logic. Currently functional but waiting on front-end implementation.</li>
   <li>Reader state tracking and an attached event system for incrementing scores, printing images, and other functionality to be called when a reader traverses particular nodes.</li>
   <li>An autosave system that clears out older autosaves after a while; currently they just stack up in `story_data` endlessly.</li>
 </ul>
+
+## Copyright Information
+The contents of this repository are published under a Creative Commons Attribution 4.0 International License. In short:
+  
+ You are free to:
+    Share — copy and redistribute the material in any medium or format.
+    Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+
+Under the following terms:
+  Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+  No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
