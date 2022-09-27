@@ -43,7 +43,7 @@ To **use the renderer in your own project**,
 </ul>
 
 ## Copyright Information
-<p>The contents of this repository are published under a Creative Commons Attribution 4.0 International License. In short:
+<p>The contents of this repository are published under a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>. In short:
 <br><br>
  You are free to:<br>
     Share — copy and redistribute the material in any medium or format.<br>
