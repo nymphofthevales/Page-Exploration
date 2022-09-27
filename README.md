@@ -18,7 +18,6 @@ A clean reader view shows what the reader will see.</p>
 
 ## How to use
 To **use the visual editor**,
-0. Fork the main branch.
 1. Use `tsc` to compile the project directory.
 2. Make sure `mainFile` in `main.js` is set to `full-editor.html`.
 3. The editor doesn't have a frontpage yet, so to select which story to edit or to make a new one, enter the filename and so forth into `full-editor-application.ts` as directed in the first block after the import statements.
