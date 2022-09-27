@@ -29,8 +29,8 @@ To **use the visual editor**,
 To **use the renderer in your own project**,
 1. Copy the `scripts` directory somewhere into your project.
 2. Make sure you have a `story_data` folder in your project's root directory, and your `storyname.json` file is in it.
-3. In a script tag or file linked to your projct HTML document, import `prepareStoryInstance` and `StoryRenderer`.
-4. Use prepareStoryInstance to read your story from disc, and pass that story to a new `StoryRenderer` instance. An example of this can be seen in `renderer-only-application.ts`
+3. In a script tag or file linked to your project HTML document, import `prepareStoryInstance` and `StoryRenderer`.
+4. Use `prepareStoryInstance` to read your story from disc, and pass that story to a new `StoryRenderer` instance. An example of this can be seen in `renderer-only-application.ts`
 4. The `StoryRenderer` will automatically render story content and options into divs with the ids `story-text` and `story-options`. Make sure these exist somewhere in your HTML structure and you're golden!
 5. Let me know what project you're using my little app for, because I'd love to hear all about it!! :)
 
