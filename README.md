@@ -1,10 +1,10 @@
 # Page-Exploration
 <p>A library for writing, and managing progress through, a branching or nonlinear story. First made as a rebuilt game logic for my game Keeper of the Labyrinth.</p> 
 
-<p>![Easily manage multiple options in the editor view.](/images/working.png)<br>
+<p><img src="./images/working.png"><br>
 Easily manage multiple options in the editor view.</p>
 
-<p>![A clean reader view shows what the reader will see.](/images/readerview.png)<br>
+<p><img src="./images/readerview.png"><br>
 A clean reader view shows what the reader will see.</p>
 
 ## Features
